@@ -65,7 +65,7 @@ public class ComponentLevelMap extends Component {
 
         viewport = garnet.getGraphics().getViewportManager().getViewport(Constants.tileGridViewportId);
 
-        player = parent.getContext().getObjectByTag(Constants.TAG_PLAYER);
+        player = getObjectByTagFromParentContext(Constants.TAG_PLAYER);
     }
 
     @Override

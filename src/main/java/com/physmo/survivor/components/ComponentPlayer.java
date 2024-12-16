@@ -76,11 +76,11 @@ public class ComponentPlayer extends Component {
 
     @Override
     public void init() {
-        spriteHelper = parent.getContext().getComponent(SpriteHelper.class);
+        spriteHelper = getComponentFromParentContext(SpriteHelper.class);
         garnet = SceneManager.getSharedContext().getObjectByType(Garnet.class);
-        collisionSystem = parent.getContext().getObjectByType(CollisionSystem.class);
-        playerCapabilities = parent.getContext().getComponent(ComponentPlayerCapabilities.class);
-        gameLogic = parent.getContext().getComponent(ComponentGameLogic.class);
+        collisionSystem = getObjectByTypeFromParentContext(CollisionSystem.class);
+        playerCapabilities = getComponentFromParentContext(ComponentPlayerCapabilities.class);
+        gameLogic = getComponentFromParentContext(ComponentGameLogic.class);
 
         parent.addTag(Constants.TAG_PLAYER);
 

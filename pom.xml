@@ -20,7 +20,7 @@
         <dependency>
             <groupId>io.github.nickd3000</groupId>
             <artifactId>garnet</artifactId>
-            <version>0.5.2</version>
+            <version>0.5.3_SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

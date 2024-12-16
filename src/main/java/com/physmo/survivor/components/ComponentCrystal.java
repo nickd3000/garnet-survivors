@@ -20,7 +20,7 @@ public class ComponentCrystal extends Component {
     public void setHoming(boolean homing) {
         if (this.homing) return;
         this.homing = homing;
-        player = parent.getContext().getObjectByTag("player");
+        player = getObjectByTagFromParentContext("player");
         Vector3 directionTo = player.getTransform().getDirectionTo(parent.getTransform());
         dx = -directionTo.x * 100;
         dy = -directionTo.y * 100;
@@ -28,7 +28,7 @@ public class ComponentCrystal extends Component {
 
     @Override
     public void init() {
-        spriteHelper = parent.getContext().getComponent(SpriteHelper.class);
+        spriteHelper = getComponentFromParentContext(SpriteHelper.class);
         collider = parent.getComponent(ColliderComponent.class);
     }
 
@@ -36,7 +36,7 @@ public class ComponentCrystal extends Component {
     @Override
     public void tick(double t) {
         if (killMe) {
-            CollisionSystem collisionSystem = parent.getContext().getObjectByType(CollisionSystem.class);
+            CollisionSystem collisionSystem = getObjectByTypeFromParentContext(CollisionSystem.class);
             Collidable collidable = parent.getComponent(ColliderComponent.class);
             collisionSystem.removeCollidable(collidable);
             parent.destroy();

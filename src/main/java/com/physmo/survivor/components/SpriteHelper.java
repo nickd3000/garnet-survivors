@@ -42,8 +42,8 @@ public class SpriteHelper extends Component {
         garnet = SceneManager.getSharedContext().getObjectByType(Garnet.class);
         g = garnet.getGraphics();
 
-        gameObjectLevel = parent.getContext().getObjectByTag("levelmap");
-        levelMap = parent.getContext().getComponent(ComponentLevelMap.class);
+        gameObjectLevel = getObjectByTagFromParentContext("levelmap");
+        levelMap = getComponentFromParentContext(ComponentLevelMap.class);
     }
 
     @Override

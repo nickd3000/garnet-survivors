@@ -31,11 +31,11 @@ public class ComponentEnemySpawner extends Component {
 
     @Override
     public void init() {
-        spriteHelper = parent.getContext().getComponent(SpriteHelper.class);
+        spriteHelper = getComponentFromParentContext(SpriteHelper.class);
         garnet = SceneManager.getSharedContext().getObjectByType(Garnet.class);
-        collisionSystem = parent.getContext().getObjectByType(CollisionSystem.class);
-        levelMap = parent.getContext().getComponent(ComponentLevelMap.class);
-        gameLogic = parent.getContext().getComponent(ComponentGameLogic.class);
+        collisionSystem = getObjectByTypeFromParentContext(CollisionSystem.class);
+        levelMap = getComponentFromParentContext(ComponentLevelMap.class);
+        gameLogic = getComponentFromParentContext(ComponentGameLogic.class);
     }
 
     @Override

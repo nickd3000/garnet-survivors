@@ -14,7 +14,7 @@ import com.physmo.survivor.components.SpriteHelper;
 public class Bullet extends Component implements DamageSupplier {
 
     double speed = 50;
-    ProjectileType projectileType = ProjectileType.BULLET;
+    ProjectileType projectileType = ProjectileType.ARROW;
     double dx = 0, dy = 0;
     boolean killMe = false;
     double age = 0;
@@ -34,10 +34,10 @@ public class Bullet extends Component implements DamageSupplier {
 
     @Override
     public void init() {
-        playerCapabilities = parent.getContext().getComponent(ComponentPlayerCapabilities.class);
-        particleFactory = parent.getContext().getComponent(ParticleFactory.class);
+        playerCapabilities = getComponentFromParentContext(ComponentPlayerCapabilities.class);
+        particleFactory = getComponentFromParentContext(ParticleFactory.class);
 
-        spriteHelper = parent.getContext().getComponent(SpriteHelper.class);
+        spriteHelper = getComponentFromParentContext(SpriteHelper.class);
 
         colliderComponent = parent.getComponent(ColliderComponent.class);
 
@@ -67,7 +67,7 @@ public class Bullet extends Component implements DamageSupplier {
         if (age > 3) killMe = true;
 
         if (killMe) {
-            CollisionSystem collisionSystem = parent.getContext().getObjectByType(CollisionSystem.class);
+            CollisionSystem collisionSystem = getObjectByTypeFromParentContext(CollisionSystem.class);
             Collidable collidable = parent.getComponent(ColliderComponent.class);
             collisionSystem.removeCollidable(collidable);
             parent.destroy();
@@ -95,8 +95,10 @@ public class Bullet extends Component implements DamageSupplier {
         //(vector3.getAngle() / (Math.PI * 2)) * 360;
         double angle = (getAngle() / (Math.PI * 2)) * 360;
 
-        if (projectileType == ProjectileType.BULLET) {
+        if (projectileType == ProjectileType.ARROW) {
             spriteHelper.drawSpriteInMap(x, y, 3, 2, angle);
+        } else if (projectileType == ProjectileType.ICE_ARROW) {
+            spriteHelper.drawSpriteInMap(x, y, 11, 2, angle);
         } else if (projectileType == ProjectileType.MAGIC) {
             spriteHelper.drawSpriteInMap(x - 8, y - 8, 2, 2);
         } else if (projectileType == ProjectileType.FIREBALL) {
@@ -125,6 +127,12 @@ public class Bullet extends Component implements DamageSupplier {
     @Override
     public double getDamage() {
         return damage;
+    }
+
+    @Override
+    public boolean causesFreeze() {
+        if (projectileType==ProjectileType.ICE_ARROW) return true;
+        return false;
     }
 
     public void setDamage(double damage) {

@@ -148,7 +148,7 @@
             <pierce>1</pierce>
             <interval>0.2</interval>
             <knock_back>1</knock_back>
-            <duration>1</duration>
+            <duration>3</duration>
             <levels>
                 <level id="1">
                     <effect>damage up 5%</effect>
@@ -225,6 +225,70 @@
                 </level>
                 <level id="6">
                     <effect>damage up 5%</effect>
+                </level>
+                <level id="7">
+                    <effect>count up 1</effect>
+                </level>
+                <level id="8">
+                    <effect>cooldown down 10%</effect>
+                </level>
+                <level id="9">
+                    <effect>count up 1</effect>
+                </level>
+                <level id="10">
+                    <effect>damage up 5%</effect>
+                </level>
+                <level id="11">
+                    <effect>pierce up 1</effect>
+                </level>
+                <level id="12">
+                    <effect>knock_back up 5%</effect>
+                </level>
+                <level id="13">
+                    <effect>cooldown down 10%</effect>
+                </level>
+                <level id="14">
+                    <effect>count up 1</effect>
+                </level>
+                <level id="15">
+                    <effect>cooldown down 10%</effect>
+                </level>
+
+            </levels>
+        </weapon>
+        <weapon id="4" name="iceBow">
+            <damage>17</damage>
+            <speed>110</speed>
+            <cooldown>1.5</cooldown>
+            <count>1</count>
+            <pierce>1</pierce>
+            <interval>0.2</interval>
+            <knock_back>1</knock_back>
+            <duration>1</duration>
+            <levels>
+                <level id="1">
+                    <effect>damage up 5%</effect>
+                    <description>Increase damage 5%</description>
+                </level>
+                <level id="2">
+                    <effect>count up 1</effect>
+                    <description>Increase number of arrows by 1</description>
+                </level>
+                <level id="3">
+                    <effect>speed up 10%</effect>
+                    <description>Increase speed by 10%</description>
+                </level>
+                <level id="4">
+                    <effect>pierce up 1</effect>
+                    <description>Increase pierce by 1</description>
+                </level>
+                <level id="5">
+                    <effect>knock_back up 5%</effect>
+                    <description>Increase knock_back by 5%</description>
+                </level>
+                <level id="6">
+                    <effect>damage up 5%</effect>
+                    <description>Increase damage by 5%</description>
                 </level>
                 <level id="7">
                     <effect>count up 1</effect>

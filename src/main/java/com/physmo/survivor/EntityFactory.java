@@ -75,30 +75,6 @@ public class EntityFactory {
 
         enemy.setDetails(enemyData.getSpeed() * baseEnemySpeed, enemyData.getHealth(), coords[0], coords[1]);
 
-//        // Mummy
-//        if (type == 0) {
-//            enemy.setDetails(12, 200, 10, 7);
-//        }
-//
-//        // Snake
-//        if (type == 1) {
-//            enemy.setDetails(13, 20, 10, 3);
-//        }
-//
-//        // Goblin
-//        if (type == 2) {
-//            enemy.setDetails(10, 50, 1, 6);
-//        }
-//
-//        // Ogre 1
-//        if (type == 3) {
-//            enemy.setDetails(10, 250, 1, 8);
-//        }
-//
-//        // Ogre 2
-//        if (type == 4) {
-//            enemy.setDetails(12, 350, 2, 8);
-//        }
     }
 
     public static void createSimpleBullet(Context context, CollisionSystem collisionSystem, double x, double y, double dx, double dy, double speed, ProjectileType type, int pierce, double damage) {

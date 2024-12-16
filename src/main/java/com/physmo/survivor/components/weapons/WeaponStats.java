@@ -21,7 +21,10 @@ public class WeaponStats {
         }
     }
 
-    public WeaponStat get(WeaponStatType weaponStatType) {
+    /**
+     * Get the specified stat for this weapon, adjusted by all upgrades.
+     */
+    public WeaponStat getAdjustedStat(WeaponStatType weaponStatType) {
         return stats.get(weaponStatType);
     }
 

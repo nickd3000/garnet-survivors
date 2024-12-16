@@ -16,6 +16,8 @@ public class ComponentHud extends Component {
     ComponentPlayer player;
     ComponentGameLogic gameLogic;
 
+    double hpBarSpeed = 5;
+
     int trackedScore = 0;
     double trackedXp = 0;
 
@@ -24,8 +26,8 @@ public class ComponentHud extends Component {
         resources = SceneManager.getSharedContext().getObjectByType(Resources.class);
         garnet = SceneManager.getSharedContext().getObjectByType(Garnet.class);
         g = garnet.getGraphics();
-        player = parent.getContext().getComponent(ComponentPlayer.class);
-        gameLogic = parent.getContext().getComponent(ComponentGameLogic.class);
+        player = getComponentFromParentContext(ComponentPlayer.class);
+        gameLogic = getComponentFromParentContext(ComponentGameLogic.class);
     }
 
     @Override
@@ -36,7 +38,7 @@ public class ComponentHud extends Component {
         int xp = gameLogic.xp;
         if (trackedXp>xp) trackedXp = xp;
         else if (trackedXp!=xp) {
-            trackedXp+=t*15;
+            trackedXp+=t*hpBarSpeed;
         }
     }
 

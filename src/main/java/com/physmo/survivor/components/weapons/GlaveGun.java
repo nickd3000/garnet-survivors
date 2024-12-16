@@ -29,9 +29,9 @@ public class GlaveGun extends Component implements Weapon, Upgradable {
     @Override
     public void init() {
 
-        collisionSystem = parent.getContext().getObjectByType(CollisionSystem.class);
+        collisionSystem = getObjectByTypeFromParentContext(CollisionSystem.class);
 
-        playerCapabilities = parent.getContext().getComponent(ComponentPlayerCapabilities.class);
+        playerCapabilities = getComponentFromParentContext(ComponentPlayerCapabilities.class);
 
         resources = SceneManager.getSharedContext().getObjectByType(Resources.class);
 
@@ -54,8 +54,8 @@ public class GlaveGun extends Component implements Weapon, Upgradable {
     public void tick(double t) {
         cooldown -= t;
         if (cooldown < 0) {
-            cooldown += weaponStats.get(WeaponStatType.COOLDOWN).value;
-            int shotCount = (int) weaponStats.get(WeaponStatType.COUNT).value;
+            cooldown += weaponStats.getAdjustedStat(WeaponStatType.COOLDOWN).value;
+            int shotCount = (int) weaponStats.getAdjustedStat(WeaponStatType.COUNT).value;
             for (int i = 0; i < shotCount; i++) {
                 fire(i, shotCount);
             }
@@ -65,10 +65,10 @@ public class GlaveGun extends Component implements Weapon, Upgradable {
     }
 
     public void fire(int bulletNumber, int bulletTotal) {
-        double lifeTime = weaponStats.get(WeaponStatType.DURATION).value;
+        double lifeTime = weaponStats.getAdjustedStat(WeaponStatType.DURATION).value;
         double radius = 40;
-        double speed = weaponStats.get(WeaponStatType.SPEED).value;
-        double damage = weaponStats.get(WeaponStatType.DAMAGE).value;
+        double speed = weaponStats.getAdjustedStat(WeaponStatType.SPEED).value;
+        double damage = weaponStats.getAdjustedStat(WeaponStatType.DAMAGE).value;
         EntityFactory.createOrbitingBullet(parent.getContext(), collisionSystem, parent, radius, speed, bulletNumber, bulletTotal, ProjectileType.GLAVE, lifeTime, damage);
     }
 

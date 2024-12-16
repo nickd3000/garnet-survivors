@@ -23,8 +23,8 @@ public class ParticleFactory extends Component {
 
     @Override
     public void init() {
-        particleManager = parent.getContext().getObjectByType(ParticleManager.class);
-        spriteHelper = parent.getContext().getComponent(SpriteHelper.class);
+        particleManager = getObjectByTypeFromParentContext(ParticleManager.class);
+        spriteHelper = getComponentFromParentContext(SpriteHelper.class);
 
         wandTrail = new ParticleTemplate();
         wandTrail.setLifeTime(0.2, 1.0);

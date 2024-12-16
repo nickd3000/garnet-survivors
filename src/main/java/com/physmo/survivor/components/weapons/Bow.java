@@ -35,9 +35,9 @@ public class Bow extends Component implements Weapon, Upgradable {
     @Override
     public void init() {
 
-        collisionSystem = parent.getContext().getObjectByType(CollisionSystem.class);
+        collisionSystem = getObjectByTypeFromParentContext(CollisionSystem.class);
 
-        playerCapabilities = parent.getContext().getComponent(ComponentPlayerCapabilities.class);
+        playerCapabilities = getComponentFromParentContext(ComponentPlayerCapabilities.class);
 
         resources = SceneManager.getSharedContext().getObjectByType(Resources.class);
 
@@ -58,13 +58,13 @@ public class Bow extends Component implements Weapon, Upgradable {
         cooldown -= t;
         if (cooldown < 0) {
             //cooldown += baseCooldownTime * playerCapabilities.getProjectileRateAdjuster();
-            cooldown += weaponStats.get(WeaponStatType.COOLDOWN).value;
-            pendingShots += (int) weaponStats.get(WeaponStatType.COUNT).value;
+            cooldown += weaponStats.getAdjustedStat(WeaponStatType.COOLDOWN).value;
+            pendingShots += (int) weaponStats.getAdjustedStat(WeaponStatType.COUNT).value;
         }
 
         subShotTimer -= t;
         if (subShotTimer < 0) {
-            subShotTimer += weaponStats.get(WeaponStatType.INTERVAL).value;
+            subShotTimer += weaponStats.getAdjustedStat(WeaponStatType.INTERVAL).value;
             if (pendingShots > 0) {
                 pendingShots--;
                 fire();
@@ -82,10 +82,10 @@ public class Bow extends Component implements Weapon, Upgradable {
     }
 
     public void createBullet(double x, double y, double dx, double dy) {
-        double bulletSpeed = weaponStats.get(WeaponStatType.SPEED).value;
-        int pierce = (int) weaponStats.get(WeaponStatType.PIERCE).value;
-        double damage = weaponStats.get(WeaponStatType.DAMAGE).value;
-        EntityFactory.createSimpleBullet(parent.getContext(), collisionSystem, x, y, dx, dy, bulletSpeed, ProjectileType.BULLET, pierce, damage);
+        double bulletSpeed = weaponStats.getAdjustedStat(WeaponStatType.SPEED).value;
+        int pierce = (int) weaponStats.getAdjustedStat(WeaponStatType.PIERCE).value;
+        double damage = weaponStats.getAdjustedStat(WeaponStatType.DAMAGE).value;
+        EntityFactory.createSimpleBullet(parent.getContext(), collisionSystem, x, y, dx, dy, bulletSpeed, ProjectileType.ARROW, pierce, damage);
     }
 
     @Override

@@ -30,7 +30,7 @@ public class ComponentEnemy extends Component {
     double rollAngle = 0;
     Resources resources;
     ColliderComponent collider;
-    double speed = 5;
+    double speed = 4;
     int[] sprite = new int[2];
     ComponentPlayerCapabilities playerCapabilities;
     ComponentGameLogic gameLogic;
@@ -38,14 +38,18 @@ public class ComponentEnemy extends Component {
     double hitFlashMax = 0.1;
     double hitFlashTimer = 0;
 
+    boolean statusFrozen = false;
+    double frozenTimer = 0;
+
     @Override
     public void init() {
-        playerCapabilities = parent.getContext().getComponent(ComponentPlayerCapabilities.class);
-        particleFactory = parent.getContext().getComponent(ParticleFactory.class);
 
-        spriteHelper = parent.getContext().getComponent(SpriteHelper.class);
+        playerCapabilities = getComponentFromParentContext(ComponentPlayerCapabilities.class);
+        particleFactory = getComponentFromParentContext(ParticleFactory.class);
 
-        player = parent.getContext().getObjectByTag(Constants.TAG_PLAYER);
+        spriteHelper = getComponentFromParentContext(SpriteHelper.class);
+
+        player = getObjectByTagFromParentContext(Constants.TAG_PLAYER);
 
         collider = parent.getComponent(ColliderComponent.class);
         collider.setCallbackProximity(relativeObject -> {
@@ -59,6 +63,10 @@ public class ComponentEnemy extends Component {
 
                         health -= damageSupplier.getDamage();
                         hitFlashTimer = hitFlashMax;
+                        if (damageSupplier.causesFreeze()) {
+                            statusFrozen = true;
+                            frozenTimer = 5;
+                        }
                     }
                 }
 
@@ -67,7 +75,7 @@ public class ComponentEnemy extends Component {
         });
 
         resources = SceneManager.getSharedContext().getObjectByType(Resources.class);
-        gameLogic = parent.getContext().getComponent(ComponentGameLogic.class);
+        gameLogic = getComponentFromParentContext(ComponentGameLogic.class);
 
         rollAngle = Math.random() * 360;
 
@@ -80,16 +88,34 @@ public class ComponentEnemy extends Component {
         this.sprite[1] = spriteY;
     }
 
+    public void processStatusEffects(double t) {
+        if (statusFrozen) {
+            frozenTimer -= t;
+            if (frozenTimer < 0) {
+                frozenTimer = 0;
+                statusFrozen = false;
+            }
+        }
+    }
+
+
     @Override
     public void tick(double t) {
 
-        parent.getTransform().x += moveDir.x * speed * t;
-        parent.getTransform().y += moveDir.y * speed * t;
+        processStatusEffects(t);
 
         moveDirTimeout -= t;
         if (moveDirTimeout < 0) {
             moveDirTimeout = 0.3;
             calculateMoveDir();
+        }
+
+        boolean canMove = true;
+        if (statusFrozen) canMove = false;
+
+        if (canMove) {
+            parent.getTransform().x += moveDir.x * speed * t;
+            parent.getTransform().y += moveDir.y * speed * t;
         }
 
         double minDist = 15;
@@ -105,7 +131,7 @@ public class ComponentEnemy extends Component {
         closeObjects.clear();
 
         if (health < 0) {
-            CollisionSystem collisionSystem = parent.getContext().getObjectByType(CollisionSystem.class);
+            CollisionSystem collisionSystem = getObjectByTypeFromParentContext(CollisionSystem.class);
             Collidable collidable = parent.getComponent(ColliderComponent.class);
             collisionSystem.removeCollidable(collidable);
             parent.destroy();

@@ -18,7 +18,7 @@ import com.physmo.survivor.components.SpriteHelper;
 public class OrbitingBullet extends Component implements DamageSupplier {
 
     double speed = 50;
-    ProjectileType projectileType = ProjectileType.BULLET;
+    ProjectileType projectileType = ProjectileType.ARROW;
 
     boolean killMe = false;
     double age = 0;
@@ -57,11 +57,11 @@ public class OrbitingBullet extends Component implements DamageSupplier {
 
     @Override
     public void init() {
-        playerCapabilities = parent.getContext().getComponent(ComponentPlayerCapabilities.class);
-        particleManager = parent.getContext().getObjectByType(ParticleManager.class);
+        playerCapabilities = getComponentFromParentContext(ComponentPlayerCapabilities.class);
+        particleManager = getObjectByTypeFromParentContext(ParticleManager.class);
         Garnet garnet = SceneManager.getSharedContext().getObjectByType(Garnet.class);
-        spriteHelper = parent.getContext().getComponent(SpriteHelper.class);
-        particleFactory = parent.getContext().getComponent(ParticleFactory.class);
+        spriteHelper = getComponentFromParentContext(SpriteHelper.class);
+        particleFactory = getComponentFromParentContext(ParticleFactory.class);
         colliderComponent = parent.getComponent(ColliderComponent.class);
 
 //        colliderComponent.setCallbackEnter(target -> {
@@ -113,7 +113,7 @@ public class OrbitingBullet extends Component implements DamageSupplier {
 
         if (killMe) {
             //System.out.println("kill orbiter");
-            CollisionSystem collisionSystem = parent.getContext().getObjectByType(CollisionSystem.class);
+            CollisionSystem collisionSystem = getObjectByTypeFromParentContext(CollisionSystem.class);
             Collidable collidable = parent.getComponent(ColliderComponent.class);
             collisionSystem.removeCollidable(collidable);
             parent.destroy();
@@ -152,6 +152,11 @@ public class OrbitingBullet extends Component implements DamageSupplier {
     @Override
     public double getDamage() {
         return damage;
+    }
+
+    @Override
+    public boolean causesFreeze() {
+        return false;
     }
 
     public void setDamage(double damage) {

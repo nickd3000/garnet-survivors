@@ -30,9 +30,9 @@ public class FireWand extends Component implements Weapon, Upgradable {
     @Override
     public void init() {
 
-        collisionSystem = parent.getContext().getObjectByType(CollisionSystem.class);
+        collisionSystem = getObjectByTypeFromParentContext(CollisionSystem.class);
 
-        playerCapabilities = parent.getContext().getComponent(ComponentPlayerCapabilities.class);
+        playerCapabilities = getComponentFromParentContext(ComponentPlayerCapabilities.class);
         resources = SceneManager.getSharedContext().getObjectByType(Resources.class);
 
         gdWeapon = resources.getGameData().getWeaponByName(getDataName());
@@ -48,8 +48,8 @@ public class FireWand extends Component implements Weapon, Upgradable {
         cooldown -= t;
         if (cooldown < 0) {
             //cooldown += cooldownPeriod * playerCapabilities.getProjectileRateAdjuster();
-            cooldown += weaponStats.get(WeaponStatType.COOLDOWN).value;
-            int count = (int) weaponStats.get(WeaponStatType.COUNT).value;
+            cooldown += weaponStats.getAdjustedStat(WeaponStatType.COOLDOWN).value;
+            int count = (int) weaponStats.getAdjustedStat(WeaponStatType.COUNT).value;
             fire(count);
         }
 
@@ -68,9 +68,9 @@ public class FireWand extends Component implements Weapon, Upgradable {
     }
 
     public void createBullet(double x, double y, double dx, double dy) {
-        double bulletSpeed = weaponStats.get(WeaponStatType.SPEED).value;
-        int pierce = (int) weaponStats.get(WeaponStatType.PIERCE).value;
-        double damage = weaponStats.get(WeaponStatType.DAMAGE).value;
+        double bulletSpeed = weaponStats.getAdjustedStat(WeaponStatType.SPEED).value;
+        int pierce = (int) weaponStats.getAdjustedStat(WeaponStatType.PIERCE).value;
+        double damage = weaponStats.getAdjustedStat(WeaponStatType.DAMAGE).value;
 
         EntityFactory.createSimpleBullet(parent.getContext(), collisionSystem, x, y, dx, dy, bulletSpeed, ProjectileType.FIREBALL, pierce, damage);
     }

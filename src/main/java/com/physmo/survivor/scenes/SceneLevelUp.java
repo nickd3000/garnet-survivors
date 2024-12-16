@@ -22,6 +22,7 @@ import com.physmo.survivor.components.items.StrengthCharm;
 import com.physmo.survivor.components.weapons.Bow;
 import com.physmo.survivor.components.weapons.FireWand;
 import com.physmo.survivor.components.weapons.GlaveGun;
+import com.physmo.survivor.components.weapons.IceBow;
 import com.physmo.survivor.components.weapons.Wand;
 import com.physmo.survivor.components.weapons.Weapon;
 import com.physmo.survivor.gamedata.GDWeapon;
@@ -217,6 +218,7 @@ public class SceneLevelUp extends Scene {
             addNewUpgrades(Bow.class, "Bow");
             addNewUpgrades(FireWand.class, "Fire Wand");
             addNewUpgrades(Wand.class, "Magic Wand");
+            addNewUpgrades(IceBow.class, "Ice Bow");
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
