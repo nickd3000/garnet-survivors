@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static com.physmo.garnet.Utils.lerp;
 
-public class ComponentPlayerCapabilities extends Component {
+public class PlayerCapabilities extends Component {
 
 //    public static int PROJECTILE_SPEED = 1;
 //    public static int PROJECTILE_RATE = 2;

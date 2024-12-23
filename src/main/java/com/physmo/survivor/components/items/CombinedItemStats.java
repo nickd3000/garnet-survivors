@@ -51,11 +51,7 @@ public class CombinedItemStats extends Component {
     @Override
     public void init() {
         initialized = true;
-
         clearBaseStats();
-
-        // Set test values
-        //weaponStatChange.get(WeaponStatType.COUNT).value = 1;
     }
 
     @Override
@@ -65,7 +61,6 @@ public class CombinedItemStats extends Component {
         if (refreshTimer < 0) {
             refreshTimer += 1;
             refresh();
-            //System.out.println("refresh item stats");
         }
 
     }

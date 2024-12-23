@@ -15,12 +15,12 @@ import com.physmo.survivor.EntityFactory;
 import java.util.List;
 import java.util.Random;
 
-public class ComponentEnemySpawner extends Component {
+public class EnemySpawner extends Component {
     SpriteHelper spriteHelper;
     Garnet garnet;
     CollisionSystem collisionSystem;
-    ComponentLevelMap levelMap;
-    ComponentGameLogic gameLogic;
+    LevelMap levelMap;
+    GameLogic gameLogic;
     Random random = new Random();
     double spawnMargin = 32;
     double despawnMargin = 64;
@@ -34,8 +34,8 @@ public class ComponentEnemySpawner extends Component {
         spriteHelper = getComponentFromParentContext(SpriteHelper.class);
         garnet = SceneManager.getSharedContext().getObjectByType(Garnet.class);
         collisionSystem = getObjectByTypeFromParentContext(CollisionSystem.class);
-        levelMap = getComponentFromParentContext(ComponentLevelMap.class);
-        gameLogic = getComponentFromParentContext(ComponentGameLogic.class);
+        levelMap = getComponentFromParentContext(LevelMap.class);
+        gameLogic = getComponentFromParentContext(GameLogic.class);
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.physmo.survivor.components;
 import com.physmo.garnet.Garnet;
 import com.physmo.garnet.graphics.Graphics;
 import com.physmo.garnet.toolkit.Component;
-import com.physmo.garnet.toolkit.GameObject;
 import com.physmo.garnet.toolkit.scene.SceneManager;
 import com.physmo.survivor.Constants;
 import com.physmo.survivor.Resources;
@@ -12,8 +11,8 @@ public class SpriteHelper extends Component {
     Resources resources;
     Graphics g;
     Garnet garnet;
-    GameObject gameObjectLevel;
-    ComponentLevelMap levelMap;
+
+    LevelMap levelMap;
 
     int spriteColor = 0xffffffff;
 
@@ -32,6 +31,7 @@ public class SpriteHelper extends Component {
     public void drawSpriteInMap(int x, int y, int tileX, int tileY, double angle, int col) {
         g.setActiveViewport(Constants.tileGridViewportId);
         g.setColor(col);
+        g.setDrawOrder(Constants.DRAW_ORDER_ABOVE_GROUND);
         g.drawImage(resources.getSpritesTilesheet(), x, y, tileX, tileY, angle);
     }
 
@@ -42,8 +42,7 @@ public class SpriteHelper extends Component {
         garnet = SceneManager.getSharedContext().getObjectByType(Garnet.class);
         g = garnet.getGraphics();
 
-        gameObjectLevel = getObjectByTagFromParentContext("levelmap");
-        levelMap = getComponentFromParentContext(ComponentLevelMap.class);
+        levelMap = getComponentFromParentContext(LevelMap.class);
     }
 
     @Override

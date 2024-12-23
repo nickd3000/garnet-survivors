@@ -12,7 +12,7 @@ import com.physmo.garnet.toolkit.scene.SceneManager;
 import com.physmo.survivor.Constants;
 import com.physmo.survivor.Resources;
 import com.physmo.survivor.Upgradable;
-import com.physmo.survivor.components.ComponentPlayerCapabilities;
+import com.physmo.survivor.components.PlayerCapabilities;
 import com.physmo.survivor.components.PlayerCapability;
 import com.physmo.survivor.components.items.CooldownCharm;
 import com.physmo.survivor.components.items.DuplicatorCharm;
@@ -42,7 +42,7 @@ public class SceneLevelUp extends Scene {
     Garnet garnet;
     Resources resources;
     RegularFont regularFont;
-    ComponentPlayerCapabilities playerCapabilities;
+    PlayerCapabilities playerCapabilities;
     List<PlayerCapability> threeCapabilities = new ArrayList<>();
     int selectedRow = 0;
 
@@ -50,9 +50,13 @@ public class SceneLevelUp extends Scene {
     List<Upgrade> upgrades = new ArrayList<>();
     List<Integer> upgradeIndexes = new ArrayList<>();
 
+    int[] windowSize = new int[2];
+    int[] windowMargin = new int[2];
+
     public SceneLevelUp(String name) {
         super(name);
     }
+    double timer=0;
 
     @Override
     public void init() {
@@ -60,10 +64,18 @@ public class SceneLevelUp extends Scene {
         resources = SceneManager.getSharedContext().getObjectByType(Resources.class);
 
         regularFont = resources.getRegularFont();
+
+        windowSize[0] = (int) (garnet.getDisplay().getCanvasSize()[0] * 0.9);
+        windowSize[1] = (int) (garnet.getDisplay().getCanvasSize()[1] * 0.9);
+        windowMargin[0] = (garnet.getDisplay().getCanvasSize()[0] - windowSize[0]) / 2;
+        windowMargin[1] = (garnet.getDisplay().getCanvasSize()[1] - windowSize[1]) / 2;
+
+        System.out.println(windowSize[0] + " " + windowSize[1] + windowMargin[0] + " " + windowMargin[1]);
     }
 
     @Override
     public void tick(double delta) {
+        timer+=delta;
 
         if (garnet.getInput().getKeyboard().isKeyFirstPress(InputKeys.KEY_L)) {
             SceneManager.popSubScene("levelUp");
@@ -72,19 +84,20 @@ public class SceneLevelUp extends Scene {
         if (garnet.getInput().isActionKeyFirstPress(InputAction.UP)) {
             selectedRow--;
             if (selectedRow < 0) {
-                selectedRow = upgrades.size();
+                selectedRow = upgradeIndexes.size()-1;
             }
         }
         if (garnet.getInput().isActionKeyFirstPress(InputAction.DOWN)) {
             selectedRow++;
-            if (selectedRow >= upgrades.size()) {
+            if (selectedRow >= upgradeIndexes.size()) {
                 selectedRow = 0;
             }
         }
 
         boolean confirm = garnet.getInput().isActionKeyFirstPress(InputAction.FIRE1);
         if (garnet.getInput().getKeyboard().isKeyFirstPress(InputKeys.KEY_ENTER)) confirm = true;
-        if (confirm) {
+        if (confirm || timer>10) {
+            timer=0;
             int upgradeIndex = upgradeIndexes.get(selectedRow);
             upgrades.get(upgradeIndex).action.run();
             SceneManager.popSubScene("levelUp");
@@ -92,39 +105,20 @@ public class SceneLevelUp extends Scene {
     }
 
     @Override
-    public void onMakeInactive() {
-
-    }
-
-    @Override
     public void draw(Graphics g) {
         g.setDrawOrder(Constants.DRAW_ORDER_PAUSE_BACKGROUND);
         g.setActiveViewport(Constants.overlayViewportId);
-        int[] bufferSize = garnet.getDisplay().getBufferSize();
-        g.filledRect(10, 10, 200 * 2, 150);
+        g.setColor(0xffffffaa);
+        g.filledRect(windowMargin[0], windowMargin[1], windowSize[0], windowSize[1]);
+        g.setDrawOrder(Constants.DRAW_ORDER_PAUSE_FOREGROUND);
         drawSelections(g);
-    }
-
-    public List<PlayerCapability> getThreeCapabilities() {
-        List<PlayerCapability> selected = new ArrayList<>();
-        while (selected.size() < 3) {
-            PlayerCapability pc = getRandomCapability();
-            if (!selected.contains(pc)) {
-                selected.add(pc);
-            }
-        }
-        return selected;
-    }
-
-    public PlayerCapability getRandomCapability() {
-        return PlayerCapability.values()[(int) (Math.random() * PlayerCapability.values().length)];
     }
 
     public void drawSelections(Graphics g) {
         g.setColor(0x005500ff);
 
         regularFont.setScale(2);
-        regularFont.drawText(g, "LEVEL UP", 100, 100);
+        regularFont.drawText(g, "LEVEL UP", 100, windowMargin[1] + 15);
 
         regularFont.setScale(1);
 
@@ -137,15 +131,9 @@ public class SceneLevelUp extends Scene {
                 g.setColor(0x000000ff);
             }
             Upgrade upgrade = upgrades.get(upgradeIndex);
-            drawCapability(g, upgrade.description, upgrade.subText, 30, 20 + i * 22);
+            drawCapability(g, upgrade.description, upgrade.subText, 30, windowMargin[1] + 20 + 30 + i * 22);
 
         }
-
-    }
-
-    public void setPlayerCapabilities(ComponentPlayerCapabilities playerCapabilities) {
-
-        this.playerCapabilities = playerCapabilities;
 
     }
 
@@ -160,26 +148,20 @@ public class SceneLevelUp extends Scene {
         findUpgrades();
     }
 
-    public void setPlayer(GameObject player) {
-        this.player = player;
+    @Override
+    public void onMakeInactive() {
+
     }
 
-    public String getUpgradeDescription(Component component, int level) {
-        GameData gameData = resources.getGameData();
-
-        if (component instanceof Weapon weapon) {
-            System.out.println(weapon.getName());
-            GDWeapon weaponByName = gameData.getWeaponByName(weapon.getDataName());
-            return weaponByName.getLevels().get(level).getEffect();
-
+    public List<PlayerCapability> getThreeCapabilities() {
+        List<PlayerCapability> selected = new ArrayList<>();
+        while (selected.size() < 3) {
+            PlayerCapability pc = getRandomCapability();
+            if (!selected.contains(pc)) {
+                selected.add(pc);
+            }
         }
-
-        return "unknown";
-    }
-
-    public void test() {
-        Map<String, String> nick = new HashMap<>();
-        Optional.ofNullable(nick.get("nick")).ifPresent(n -> nick.put("nick", n));
+        return selected;
     }
 
     // Create a list of all available upgrades.
@@ -235,6 +217,22 @@ public class SceneLevelUp extends Scene {
         }
     }
 
+    public PlayerCapability getRandomCapability() {
+        return PlayerCapability.values()[(int) (Math.random() * PlayerCapability.values().length)];
+    }
+
+    public String getUpgradeDescription(Component component, int level) {
+        GameData gameData = resources.getGameData();
+
+        if (component instanceof Weapon weapon) {
+            System.out.println(weapon.getName());
+            GDWeapon weaponByName = gameData.getWeaponByName(weapon.getDataName());
+            return weaponByName.getLevels().get(level).getEffect();
+
+        }
+
+        return "unknown";
+    }
 
     public void addNewUpgrades(Class<?> clazz, String name) throws NoSuchMethodException {
 
@@ -269,6 +267,21 @@ public class SceneLevelUp extends Scene {
         }
 
         return false;
+    }
+
+    public void setPlayerCapabilities(PlayerCapabilities playerCapabilities) {
+
+        this.playerCapabilities = playerCapabilities;
+
+    }
+
+    public void setPlayer(GameObject player) {
+        this.player = player;
+    }
+
+    public void test() {
+        Map<String, String> nick = new HashMap<>();
+        Optional.ofNullable(nick.get("nick")).ifPresent(n -> nick.put("nick", n));
     }
 }
 

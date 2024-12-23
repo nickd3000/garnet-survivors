@@ -13,7 +13,7 @@ import com.physmo.survivor.Constants;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ComponentPlayer extends Component {
+public class Player extends Component {
 
     Garnet garnet;
 
@@ -22,8 +22,8 @@ public class ComponentPlayer extends Component {
     SpriteHelper spriteHelper;
     CollisionSystem collisionSystem;
     ColliderComponent collider;
-    ComponentPlayerCapabilities playerCapabilities;
-    ComponentGameLogic gameLogic;
+    PlayerCapabilities playerCapabilities;
+    GameLogic gameLogic;
 
     public List<RelativeObject> getNearestEnemies() {
         return nearestEnemies;
@@ -61,7 +61,7 @@ public class ComponentPlayer extends Component {
 //                transform.y -= nearestCrystal.dy * 70.1 * t;
 //            }
             for (RelativeObject nearestCrystal : nearestCrystals) {
-                ComponentCrystal component = nearestCrystal.getOtherObject().collisionGetGameObject().getComponent(ComponentCrystal.class);
+                Crystal component = nearestCrystal.getOtherObject().collisionGetGameObject().getComponent(Crystal.class);
                 component.setHoming(true);
             }
         }
@@ -79,8 +79,8 @@ public class ComponentPlayer extends Component {
         spriteHelper = getComponentFromParentContext(SpriteHelper.class);
         garnet = SceneManager.getSharedContext().getObjectByType(Garnet.class);
         collisionSystem = getObjectByTypeFromParentContext(CollisionSystem.class);
-        playerCapabilities = getComponentFromParentContext(ComponentPlayerCapabilities.class);
-        gameLogic = getComponentFromParentContext(ComponentGameLogic.class);
+        playerCapabilities = getComponentFromParentContext(PlayerCapabilities.class);
+        gameLogic = getComponentFromParentContext(GameLogic.class);
 
         parent.addTag(Constants.TAG_PLAYER);
 
@@ -88,12 +88,12 @@ public class ComponentPlayer extends Component {
 
         collider.setCallbackEnter(target -> {
             if (target.hasTag(Constants.TAG_CRYSTAL)) {
-                target.getComponent(ComponentCrystal.class).requestKill();
+                target.getComponent(Crystal.class).requestKill();
                 gameLogic.increaseXp(1);
             }
         });
 
-        parent.getTransform().set(300, 200, 0);
+
 
 
     }

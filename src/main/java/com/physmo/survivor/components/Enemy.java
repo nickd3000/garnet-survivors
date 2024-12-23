@@ -12,12 +12,13 @@ import com.physmo.garnet.toolkit.simplecollision.RelativeObject;
 import com.physmo.survivor.Constants;
 import com.physmo.survivor.EntityFactory;
 import com.physmo.survivor.Resources;
+import com.physmo.survivor.TimedEvent;
 import com.physmo.survivor.components.weapons.DamageSupplier;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ComponentEnemy extends Component {
+public class Enemy extends Component {
     Vector3 moveDir = new Vector3(1, 0, 0);
     GameObject player;
 
@@ -32,19 +33,20 @@ public class ComponentEnemy extends Component {
     ColliderComponent collider;
     double speed = 4;
     int[] sprite = new int[2];
-    ComponentPlayerCapabilities playerCapabilities;
-    ComponentGameLogic gameLogic;
+    PlayerCapabilities playerCapabilities;
+    GameLogic gameLogic;
     ParticleFactory particleFactory;
-    double hitFlashMax = 0.1;
-    double hitFlashTimer = 0;
 
-    boolean statusFrozen = false;
-    double frozenTimer = 0;
+    TimedEvent hitFlashEvent = new TimedEvent();
+    TimedEvent frozenEvent = new TimedEvent();
+    TimedEvent pushBackEvent = new TimedEvent();
+
+
 
     @Override
     public void init() {
 
-        playerCapabilities = getComponentFromParentContext(ComponentPlayerCapabilities.class);
+        playerCapabilities = getComponentFromParentContext(PlayerCapabilities.class);
         particleFactory = getComponentFromParentContext(ParticleFactory.class);
 
         spriteHelper = getComponentFromParentContext(SpriteHelper.class);
@@ -62,20 +64,22 @@ public class ComponentEnemy extends Component {
                     if (component instanceof DamageSupplier damageSupplier) {
 
                         health -= damageSupplier.getDamage();
-                        hitFlashTimer = hitFlashMax;
+
+                        hitFlashEvent.start(0.2);
                         if (damageSupplier.causesFreeze()) {
-                            statusFrozen = true;
-                            frozenTimer = 5;
+                            frozenEvent.start(5);
                         }
+
+                        pushBackEvent.start(0.5);
+
                     }
                 }
-
 
             }
         });
 
         resources = SceneManager.getSharedContext().getObjectByType(Resources.class);
-        gameLogic = getComponentFromParentContext(ComponentGameLogic.class);
+        gameLogic = getComponentFromParentContext(GameLogic.class);
 
         rollAngle = Math.random() * 360;
 
@@ -89,13 +93,13 @@ public class ComponentEnemy extends Component {
     }
 
     public void processStatusEffects(double t) {
-        if (statusFrozen) {
-            frozenTimer -= t;
-            if (frozenTimer < 0) {
-                frozenTimer = 0;
-                statusFrozen = false;
-            }
-        }
+//        if (statusFrozen) {
+//            frozenTimer -= t;
+//            if (frozenTimer < 0) {
+//                frozenTimer = 0;
+//                statusFrozen = false;
+//            }
+//        }
     }
 
 
@@ -104,6 +108,10 @@ public class ComponentEnemy extends Component {
 
         processStatusEffects(t);
 
+        hitFlashEvent.tick(t);
+        frozenEvent.tick(t);
+        pushBackEvent.tick(t);
+
         moveDirTimeout -= t;
         if (moveDirTimeout < 0) {
             moveDirTimeout = 0.3;
@@ -111,11 +119,15 @@ public class ComponentEnemy extends Component {
         }
 
         boolean canMove = true;
-        if (statusFrozen) canMove = false;
+        if (frozenEvent.isActive()) canMove = false;
+
+        double backOrForward  = 1;
+
+        if (pushBackEvent.isActive()) backOrForward = -1;
 
         if (canMove) {
-            parent.getTransform().x += moveDir.x * speed * t;
-            parent.getTransform().y += moveDir.y * speed * t;
+            parent.getTransform().x += moveDir.x * speed * t* backOrForward;
+            parent.getTransform().y += moveDir.y * speed * t* backOrForward;
         }
 
         double minDist = 15;
@@ -138,7 +150,8 @@ public class ComponentEnemy extends Component {
 
             gameLogic.addToScore(100);
 
-            if (Math.random() < 0.6 * playerCapabilities.getLuckMultiplier()) {
+            if (Math.random() < 0.5) // * playerCapabilities.getLuckMultiplier()) {
+            {
                 EntityFactory.addCrystal(parent.getContext(), collisionSystem, (int) parent.getTransform().x, (int) parent.getTransform().y);
             }
 
@@ -151,10 +164,6 @@ public class ComponentEnemy extends Component {
 
         collider.setCollisionRegion(-6, -8, 12, 16);
 
-        if (hitFlashTimer > 0) {
-            hitFlashTimer -= t;
-            if (hitFlashTimer < 0) hitFlashTimer = 0;
-        }
     }
 
     private void calculateMoveDir() {
@@ -172,7 +181,8 @@ public class ComponentEnemy extends Component {
         double rotation = Math.sin(rollAngle) * 10;
 
         int color = 0xffffffff;
-        if (hitFlashTimer > 0) color = 0xff0000ff;
+        if (hitFlashEvent.isActive()) color = 0xff0000ff;
+        if (frozenEvent.isActive()) color = 0x0000ffff;
 
         spriteHelper.drawSpriteInMap(x, y, sprite[0], sprite[1], rotation, color);
     }

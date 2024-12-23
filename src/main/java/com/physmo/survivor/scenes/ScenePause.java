@@ -9,7 +9,7 @@ import com.physmo.garnet.toolkit.scene.Scene;
 import com.physmo.garnet.toolkit.scene.SceneManager;
 import com.physmo.survivor.Constants;
 import com.physmo.survivor.Resources;
-import com.physmo.survivor.components.ComponentPlayerCapabilities;
+import com.physmo.survivor.components.PlayerCapabilities;
 import com.physmo.survivor.components.PlayerCapability;
 
 
@@ -18,7 +18,7 @@ public class ScenePause extends Scene {
     Garnet garnet;
     Resources resources;
     RegularFont regularFont;
-    ComponentPlayerCapabilities playerCapabilities;
+    PlayerCapabilities playerCapabilities;
 
     public ScenePause(String name) {
         super(name);
@@ -52,6 +52,7 @@ public class ScenePause extends Scene {
         g.setActiveViewport(Constants.overlayViewportId);
         int[] bufferSize = garnet.getDisplay().getBufferSize();
         g.filledRect(10, 10, 200, 150);
+
         drawPlayerDetails(g);
     }
 
@@ -82,7 +83,7 @@ public class ScenePause extends Scene {
         regularFont.drawText(g, description + ": " + val, x, y);
     }
 
-    public void setPlayerCapabilities(ComponentPlayerCapabilities playerCapabilities) {
+    public void setPlayerCapabilities(PlayerCapabilities playerCapabilities) {
 
         this.playerCapabilities = playerCapabilities;
 

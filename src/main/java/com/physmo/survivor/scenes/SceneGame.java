@@ -15,12 +15,12 @@ import com.physmo.garnet.toolkit.simplecollision.RelativeObject;
 import com.physmo.survivor.Constants;
 import com.physmo.survivor.EntityFactory;
 import com.physmo.survivor.Resources;
-import com.physmo.survivor.components.ComponentEnemySpawner;
-import com.physmo.survivor.components.ComponentGameLogic;
-import com.physmo.survivor.components.ComponentHud;
-import com.physmo.survivor.components.ComponentLevelMap;
-import com.physmo.survivor.components.ComponentPlayer;
-import com.physmo.survivor.components.ComponentPlayerCapabilities;
+import com.physmo.survivor.components.EnemySpawner;
+import com.physmo.survivor.components.GameLogic;
+import com.physmo.survivor.components.Hud;
+import com.physmo.survivor.components.LevelMap;
+import com.physmo.survivor.components.Player;
+import com.physmo.survivor.components.PlayerCapabilities;
 import com.physmo.survivor.components.ParticleFactory;
 import com.physmo.survivor.components.SpriteHelper;
 import com.physmo.survivor.components.items.CombinedItemStats;
@@ -35,10 +35,8 @@ public class SceneGame extends Scene {
     GameObject player;
     CollisionSystem collisionSystem;
     Garnet garnet;
-    ComponentLevelMap componentLevelMap;
-    SpriteHelper spriteHelperComponent;
-    GameObject gameLogic;
-    ComponentPlayerCapabilities componentPlayerCapabilities;
+
+    PlayerCapabilities componentPlayerCapabilities;
     boolean showCollision = false;
 
     public SceneGame(String name) {
@@ -67,13 +65,19 @@ public class SceneGame extends Scene {
             }
         });
 
-        GameObject levelMapObject = new GameObject("levelmap");
-        componentLevelMap = new ComponentLevelMap();
-        levelMapObject.addComponent(componentLevelMap);
-        levelMapObject.addTag("levelmap");
-        context.add(levelMapObject);
 
-        player = new GameObject("player").addComponent(new ComponentPlayer());
+        // A single game object can hold multiple unrelated systems as components.
+        GameObject gameSystems = new GameObject("gameSystems");
+        gameSystems.addComponent(new LevelMap());
+        gameSystems.addComponent(new SpriteHelper());
+        gameSystems.addComponent(new EnemySpawner());
+        gameSystems.addComponent(new Hud());
+        gameSystems.addComponent(new ParticleFactory());
+        gameSystems.addComponent(new GameLogic());
+        context.add(gameSystems);
+
+
+        player = new GameObject("player").addComponent(new Player());
         player.addComponent(new Bow());
         //player.addComponent(new Wand());
         //player.addComponent(new GlaveGun());
@@ -81,64 +85,45 @@ public class SceneGame extends Scene {
         //player.addComponent(new DuplicatorCharm());
         //player.addComponent(new StrengthCharm());
         player.addComponent(new CombinedItemStats());
-        componentPlayerCapabilities = new ComponentPlayerCapabilities();
+        componentPlayerCapabilities = new PlayerCapabilities();
         player.addComponent(componentPlayerCapabilities);
         EntityFactory.addColliderToGameObject(collisionSystem, player);
         player.addTag(Constants.TAG_PLAYER);
+        player.getTransform().set(150*16, 100*16, 0);
         context.add(player);
 
-//        Resources resources = new Resources();
-//        resources.init(garnet.getGraphics());
-//        context.add(resources);
-
-        GameObject spriteHelper = new GameObject("spriteHelper");
-        spriteHelperComponent = new SpriteHelper();
-        spriteHelper.addComponent(spriteHelperComponent);
-        context.add(spriteHelper);
-
-        GameObject enemySpawnerObject = new GameObject("enemySpawner").addComponent(new ComponentEnemySpawner());
-        context.add(enemySpawnerObject);
-
-        GameObject hud = new GameObject("hud").addComponent(new ComponentHud());
-        context.add(hud);
+        int[] canvasSize = garnet.getDisplay().getCanvasSize();
 
         // Configure Viewports
         Viewport viewportOverlay = garnet.getGraphics().getViewportManager().getViewport(Constants.overlayViewportId);
-        viewportOverlay.setWidth(garnet.getDisplay().getWindowWidth())
-                .setHeight(garnet.getDisplay().getWindowHeight())
+        viewportOverlay.setWidth(canvasSize[0])
+                .setHeight(canvasSize[1])
                 .setWindowY(0)
                 .setWindowX(0)
                 .setClipActive(true)
                 .setDrawDebugInfo(false)
-                .setZoom(2.0);
+                .setZoom(1.0);
 
         Viewport viewport1 = garnet.getGraphics().getViewportManager().getViewport(Constants.tileGridViewportId);
-        viewport1.setWidth(garnet.getDisplay().getWindowWidth())
-                .setHeight(garnet.getDisplay().getWindowHeight())
+        viewport1.setWidth(canvasSize[0])
+                .setHeight(canvasSize[1])
                 .setWindowY(0)
                 .setWindowX(0)
                 .setClipActive(true)
                 .setDrawDebugInfo(false)
-                .setZoom(2.0);
+                .setZoom(1.0);
 
         Viewport viewport2 = garnet.getGraphics().getViewportManager().getViewport(Constants.scorePanelViewportId);
-        viewport2.setWidth(garnet.getDisplay().getWindowWidth())
+        viewport2.setWidth(canvasSize[0])
                 .setHeight(60)
                 .setWindowY(0)
                 .setWindowX(0)
                 .setClipActive(true)
                 .setDrawDebugInfo(false)
-                .setZoom(2.0);
+                .setZoom(1.0);
 
         garnet.getDebugDrawer().setVisible(false);
 
-        GameObject particleFactory = new GameObject("particleFactory");
-        particleFactory.addComponent(new ParticleFactory());
-        context.add(particleFactory);
-
-        gameLogic = new GameObject("gameLogic");
-        gameLogic.addComponent(new ComponentGameLogic());
-        context.add(gameLogic);
     }
 
     @Override
@@ -147,11 +132,11 @@ public class SceneGame extends Scene {
         collisionSystem.processCloseObjects(Constants.TAG_ENEMY, 20);
 
         List<RelativeObject> nearestEnemies = collisionSystem.getNearestObjects(Constants.TAG_ENEMY, (int) player.getTransform().x, (int) player.getTransform().y, 120);
-        player.getComponent(ComponentPlayer.class).setNearestEnemies(nearestEnemies);
+        player.getComponent(Player.class).setNearestEnemies(nearestEnemies);
 
         double pickupRadius = (16 * 2) * componentPlayerCapabilities.getPickupRadiusMultiplier();
         List<RelativeObject> nearestCrystals = collisionSystem.getNearestObjects(Constants.TAG_CRYSTAL, (int) player.getTransform().x, (int) player.getTransform().y, pickupRadius);
-        player.getComponent(ComponentPlayer.class).setNearestCrystals(nearestCrystals);
+        player.getComponent(Player.class).setNearestCrystals(nearestCrystals);
 
         garnet.getDebugDrawer().setUserString("collisions", String.valueOf(collisionSystem.getTestsPerFrame()));
 
@@ -163,15 +148,12 @@ public class SceneGame extends Scene {
 
         // Show level up screen
         if (garnet.getInput().getKeyboard().isKeyFirstPress(InputKeys.KEY_L)) {
-            SceneManager.getSceneByName("levelUp").ifPresent(
-                    scene -> {
-                        ((SceneLevelUp) scene).setPlayerCapabilities(componentPlayerCapabilities);
-                        ((SceneLevelUp) scene).setPlayer(context.getObjectByTag("player"));
-                    }
+            GameLogic gameLogic = context.getComponent(GameLogic.class);
+            gameLogic.showLevelUpScreen();
 
-            );
-            SceneManager.pushSubScene("levelUp");
         }
+
+
     }
 
     public void initParticleManager() {

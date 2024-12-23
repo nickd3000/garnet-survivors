@@ -5,12 +5,12 @@ import com.physmo.garnet.toolkit.GameObject;
 import com.physmo.garnet.toolkit.scene.SceneManager;
 import com.physmo.garnet.toolkit.simplecollision.ColliderComponent;
 import com.physmo.garnet.toolkit.simplecollision.CollisionSystem;
-import com.physmo.survivor.components.ComponentCrystal;
-import com.physmo.survivor.components.ComponentEnemy;
-import com.physmo.survivor.components.ComponentGameLogic;
+import com.physmo.survivor.components.Crystal;
+import com.physmo.survivor.components.Enemy;
+import com.physmo.survivor.components.GameLogic;
 import com.physmo.survivor.components.ProjectileType;
-import com.physmo.survivor.components.weapons.Bullet;
-import com.physmo.survivor.components.weapons.OrbitingBullet;
+import com.physmo.survivor.components.projectile.Bullet;
+import com.physmo.survivor.components.projectile.OrbitingBullet;
 import com.physmo.survivor.gamedata.GDEnemy;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class EntityFactory {
     public static double baseEnemySpeed = 10;
 
     public static void addEnemy(Context context, CollisionSystem collisionSystem, int x, int y) {
-        ComponentEnemy enemyComponent = new ComponentEnemy();
+        Enemy enemyComponent = new Enemy();
         GameObject enemy = new GameObject("enemy");
         enemy.addComponent(enemyComponent);
         enemy.getTransform().set(x, y, 0);
@@ -28,7 +28,7 @@ public class EntityFactory {
 
         addColliderToGameObject(collisionSystem, enemy);
 
-        ComponentGameLogic gameLogic = context.getComponent(ComponentGameLogic.class);
+        GameLogic gameLogic = context.getComponent(GameLogic.class);
 
 
         configureEnemy(context, gameLogic, enemyComponent, 1);
@@ -44,7 +44,7 @@ public class EntityFactory {
     }
 
     public static void addCrystal(Context context, CollisionSystem collisionSystem, int x, int y) {
-        GameObject entity = new GameObject("crystal").addComponent(new ComponentCrystal());
+        GameObject entity = new GameObject("crystal").addComponent(new Crystal());
         entity.getTransform().set(x, y, 0);
         entity.addTag(Constants.TAG_CRYSTAL);
 
@@ -53,14 +53,16 @@ public class EntityFactory {
         context.add(entity);
     }
 
-    public static void configureEnemy(Context context, ComponentGameLogic gameLogic, ComponentEnemy enemy, int type) {
+    public static void configureEnemy(Context context, GameLogic gameLogic, Enemy enemy, int type) {
 
         Resources resources = SceneManager.getSharedContext().getObjectByType(Resources.class);
         int wave = gameLogic.getCurrentWave();
 
+        int numEnemyTypes = resources.getGameData().getEnemies().size();
+
         type = wave;
         if (Math.random() > 0.8) type += 1;
-        type = type % 5;
+        type = type % numEnemyTypes;
 
         List<GDEnemy> enemies = resources.getGameData().getEnemies();
         GDEnemy enemyData = null;

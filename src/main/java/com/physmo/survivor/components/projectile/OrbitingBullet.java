@@ -1,4 +1,4 @@
-package com.physmo.survivor.components.weapons;
+package com.physmo.survivor.components.projectile;
 
 import com.physmo.garnet.Garnet;
 import com.physmo.garnet.graphics.Graphics;
@@ -10,10 +10,11 @@ import com.physmo.garnet.toolkit.scene.SceneManager;
 import com.physmo.garnet.toolkit.simplecollision.Collidable;
 import com.physmo.garnet.toolkit.simplecollision.ColliderComponent;
 import com.physmo.garnet.toolkit.simplecollision.CollisionSystem;
-import com.physmo.survivor.components.ComponentPlayerCapabilities;
+import com.physmo.survivor.components.PlayerCapabilities;
 import com.physmo.survivor.components.ParticleFactory;
 import com.physmo.survivor.components.ProjectileType;
 import com.physmo.survivor.components.SpriteHelper;
+import com.physmo.survivor.components.weapons.DamageSupplier;
 
 public class OrbitingBullet extends Component implements DamageSupplier {
 
@@ -24,7 +25,7 @@ public class OrbitingBullet extends Component implements DamageSupplier {
     double age = 0;
     SpriteHelper spriteHelper;
     ColliderComponent colliderComponent;
-    ComponentPlayerCapabilities playerCapabilities;
+    PlayerCapabilities playerCapabilities;
 
     GameObject orbitObject;
     ParticleFactory particleFactory;
@@ -57,7 +58,7 @@ public class OrbitingBullet extends Component implements DamageSupplier {
 
     @Override
     public void init() {
-        playerCapabilities = getComponentFromParentContext(ComponentPlayerCapabilities.class);
+        playerCapabilities = getComponentFromParentContext(PlayerCapabilities.class);
         particleManager = getObjectByTypeFromParentContext(ParticleManager.class);
         Garnet garnet = SceneManager.getSharedContext().getObjectByType(Garnet.class);
         spriteHelper = getComponentFromParentContext(SpriteHelper.class);

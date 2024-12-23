@@ -7,8 +7,9 @@ import com.physmo.garnet.toolkit.GameObject;
 import com.physmo.garnet.toolkit.simplecollision.Collidable;
 import com.physmo.garnet.toolkit.simplecollision.ColliderComponent;
 import com.physmo.garnet.toolkit.simplecollision.CollisionSystem;
+import com.physmo.survivor.Constants;
 
-public class ComponentCrystal extends Component {
+public class Crystal extends Component {
     SpriteHelper spriteHelper;
     boolean killMe = false;
     ColliderComponent collider;
@@ -62,7 +63,7 @@ public class ComponentCrystal extends Component {
     public void draw(Graphics g) {
         int x = (int) parent.getTransform().x;
         int y = (int) parent.getTransform().y;
-
+        g.setDrawOrder(Constants.DRAW_ORDER_PICKUPS);
         spriteHelper.drawSpriteInMap(x - 8, y - 8, 7, 1);
     }
 

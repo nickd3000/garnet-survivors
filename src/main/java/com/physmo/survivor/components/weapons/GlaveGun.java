@@ -7,7 +7,7 @@ import com.physmo.garnet.toolkit.simplecollision.CollisionSystem;
 import com.physmo.survivor.EntityFactory;
 import com.physmo.survivor.Resources;
 import com.physmo.survivor.Upgradable;
-import com.physmo.survivor.components.ComponentPlayerCapabilities;
+import com.physmo.survivor.components.PlayerCapabilities;
 import com.physmo.survivor.components.ProjectileType;
 import com.physmo.survivor.components.items.CombinedItemStats;
 import com.physmo.survivor.gamedata.GDWeapon;
@@ -17,7 +17,7 @@ public class GlaveGun extends Component implements Weapon, Upgradable {
     double cooldown = 0.1;
 
     CollisionSystem collisionSystem;
-    ComponentPlayerCapabilities playerCapabilities;
+    PlayerCapabilities playerCapabilities;
 
     int level = 0;
     WeaponStats weaponStats = new WeaponStats();
@@ -31,7 +31,7 @@ public class GlaveGun extends Component implements Weapon, Upgradable {
 
         collisionSystem = getObjectByTypeFromParentContext(CollisionSystem.class);
 
-        playerCapabilities = getComponentFromParentContext(ComponentPlayerCapabilities.class);
+        playerCapabilities = getComponentFromParentContext(PlayerCapabilities.class);
 
         resources = SceneManager.getSharedContext().getObjectByType(Resources.class);
 

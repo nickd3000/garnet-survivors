@@ -9,12 +9,12 @@ import com.physmo.garnet.toolkit.scene.SceneManager;
 import com.physmo.survivor.Constants;
 import com.physmo.survivor.Resources;
 
-public class ComponentHud extends Component {
+public class Hud extends Component {
     Resources resources;
     Graphics g;
     Garnet garnet;
-    ComponentPlayer player;
-    ComponentGameLogic gameLogic;
+    Player player;
+    GameLogic gameLogic;
 
     double hpBarSpeed = 5;
 
@@ -26,8 +26,8 @@ public class ComponentHud extends Component {
         resources = SceneManager.getSharedContext().getObjectByType(Resources.class);
         garnet = SceneManager.getSharedContext().getObjectByType(Garnet.class);
         g = garnet.getGraphics();
-        player = getComponentFromParentContext(ComponentPlayer.class);
-        gameLogic = getComponentFromParentContext(ComponentGameLogic.class);
+        player = getComponentFromParentContext(Player.class);
+        gameLogic = getComponentFromParentContext(GameLogic.class);
     }
 
     @Override
@@ -36,15 +36,14 @@ public class ComponentHud extends Component {
         if (trackedScore < actualScore) trackedScore += 1;
 
         int xp = gameLogic.xp;
-        if (trackedXp>xp) trackedXp = xp;
-        else if (trackedXp!=xp) {
-            trackedXp+=t*hpBarSpeed;
-        }
+        trackedXp = xp;
+
     }
 
     @Override
     public void draw(Graphics g) {
         g.setActiveViewport(Constants.scorePanelViewportId);
+        g.setDrawOrder(Constants.DRAW_ORDER_HUD);
         RegularFont regularFont = resources.getRegularFont();
         regularFont.setScale(1);
         g.setColor(ColorUtils.YELLOW);
@@ -58,6 +57,16 @@ public class ComponentHud extends Component {
 //        regularFont.drawText(g, "xp " + xp + "/" + targetXp, 3 + 200, 3);
 
         drawXpBar(g,10,20,trackedXp,targetXp);
+        drawClock(g);
+    }
+
+    public void drawClock(Graphics g) {
+        double gameTime = gameLogic.getGameTime();
+        int seconds = ((int) gameTime )%60;
+        int minutes = ((int) gameTime ) / 60;
+        String timeString = String.format("%02d:%02d", minutes, seconds);
+        resources.getRegularFont().drawText(g, timeString, 320, 3);
+
     }
 
     public void drawXpBar(Graphics g, int x, int y, double xp, double targetXp) {

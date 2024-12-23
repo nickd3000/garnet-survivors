@@ -9,8 +9,8 @@ import com.physmo.garnet.toolkit.simplecollision.RelativeObject;
 import com.physmo.survivor.EntityFactory;
 import com.physmo.survivor.Resources;
 import com.physmo.survivor.Upgradable;
-import com.physmo.survivor.components.ComponentPlayer;
-import com.physmo.survivor.components.ComponentPlayerCapabilities;
+import com.physmo.survivor.components.Player;
+import com.physmo.survivor.components.PlayerCapabilities;
 import com.physmo.survivor.components.ProjectileType;
 import com.physmo.survivor.components.items.CombinedItemStats;
 import com.physmo.survivor.gamedata.GDWeapon;
@@ -24,7 +24,7 @@ public class Wand extends Component implements Weapon, Upgradable {
     double cooldown = cooldownPeriod;
 
     CollisionSystem collisionSystem;
-    ComponentPlayerCapabilities playerCapabilities;
+    PlayerCapabilities playerCapabilities;
     int maxLevel = 15;
     int level = 0;
     WeaponStats weaponStats = new WeaponStats();
@@ -39,7 +39,7 @@ public class Wand extends Component implements Weapon, Upgradable {
 
         collisionSystem = getObjectByTypeFromParentContext(CollisionSystem.class);
 
-        playerCapabilities = getComponentFromParentContext(ComponentPlayerCapabilities.class);
+        playerCapabilities = getComponentFromParentContext(PlayerCapabilities.class);
         resources = SceneManager.getSharedContext().getObjectByType(Resources.class);
 
         gdWeapon = resources.getGameData().getWeaponByName(getDataName());
@@ -75,7 +75,7 @@ public class Wand extends Component implements Weapon, Upgradable {
     }
 
     public void fire(int count) {
-        List<RelativeObject> nearestObjects = parent.getComponent(ComponentPlayer.class).getNearestEnemies();
+        List<RelativeObject> nearestObjects = parent.getComponent(Player.class).getNearestEnemies();
         if (nearestObjects.isEmpty()) return;
 
         // Copy list to array
