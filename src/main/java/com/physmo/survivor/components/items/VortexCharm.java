@@ -2,12 +2,13 @@ package com.physmo.survivor.components.items;
 
 import com.physmo.garnet.graphics.Graphics;
 import com.physmo.garnet.toolkit.Component;
+import com.physmo.survivor.Upgradable;
 import com.physmo.survivor.components.weapons.ValueChange;
 import com.physmo.survivor.components.weapons.WeaponStatType;
 
-public class VortexCharm extends Component implements Item {
+public class VortexCharm extends Component implements Item, Upgradable {
 
-    int level = 0;
+    int level = 1;
 
     @Override
     public void init() {
@@ -26,12 +27,12 @@ public class VortexCharm extends Component implements Item {
 
     @Override
     public String getName() {
-        return "";
+        return "Vortex charm";
     }
 
     @Override
     public int getLevel() {
-        return 0;
+        return level;
     }
 
     @Override
@@ -41,11 +42,19 @@ public class VortexCharm extends Component implements Item {
 
     @Override
     public void increaseLevel() {
+        level++;
+    }
 
+    @Override
+    public String getLevelDescription(int level) {
+        return "";
     }
 
     @Override
     public ValueChange getWeaponModifierValueChange(WeaponStatType weaponStatType) {
+        if (weaponStatType == WeaponStatType.PICKUP_RADIUS) {
+            return ValueChange.createPercentageChange(level * 15);
+        }
         return ValueChange.createUnchanged();
     }
 }

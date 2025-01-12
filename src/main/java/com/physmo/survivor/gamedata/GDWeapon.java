@@ -14,6 +14,17 @@ public class GDWeapon {
     double knock_back;
     double duration;
     double pierce;
+
+    double size;
+
+    public double getSize() {
+        return size;
+    }
+
+    public void setSize(double size) {
+        this.size = size;
+    }
+
     List<GDWeaponLevel> levels = new ArrayList<>();
 
     public double getPierce() {

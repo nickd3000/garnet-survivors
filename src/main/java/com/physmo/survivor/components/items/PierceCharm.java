@@ -54,7 +54,6 @@ public class PierceCharm extends Component implements Item, Upgradable {
     @Override
     public ValueChange getWeaponModifierValueChange(WeaponStatType weaponStatType) {
         if (weaponStatType == WeaponStatType.PIERCE) {
-            //System.out.println("duplication reporting "+level);
             return ValueChange.createWholeNumberChange(level);
         }
 

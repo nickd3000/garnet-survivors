@@ -24,7 +24,12 @@ import com.physmo.survivor.components.PlayerCapabilities;
 import com.physmo.survivor.components.ParticleFactory;
 import com.physmo.survivor.components.SpriteHelper;
 import com.physmo.survivor.components.items.CombinedItemStats;
+import com.physmo.survivor.components.weapons.AcidStorm;
 import com.physmo.survivor.components.weapons.Bow;
+import com.physmo.survivor.components.weapons.IceStorm;
+import com.physmo.survivor.components.weapons.ValueChange;
+import com.physmo.survivor.components.weapons.Wand;
+import com.physmo.survivor.components.weapons.WeaponStatType;
 
 import java.util.List;
 import java.util.Random;
@@ -37,6 +42,8 @@ public class SceneGame extends Scene {
     Garnet garnet;
 
     PlayerCapabilities componentPlayerCapabilities;
+    CombinedItemStats combinedItemStats;
+
     boolean showCollision = false;
 
     public SceneGame(String name) {
@@ -66,6 +73,7 @@ public class SceneGame extends Scene {
         });
 
 
+
         // A single game object can hold multiple unrelated systems as components.
         GameObject gameSystems = new GameObject("gameSystems");
         gameSystems.addComponent(new LevelMap());
@@ -84,7 +92,9 @@ public class SceneGame extends Scene {
         //player.addComponent(new FireWand());
         //player.addComponent(new DuplicatorCharm());
         //player.addComponent(new StrengthCharm());
-        player.addComponent(new CombinedItemStats());
+        player.addComponent(new IceStorm());
+        combinedItemStats = new CombinedItemStats();
+        player.addComponent(combinedItemStats);
         componentPlayerCapabilities = new PlayerCapabilities();
         player.addComponent(componentPlayerCapabilities);
         EntityFactory.addColliderToGameObject(collisionSystem, player);
@@ -134,7 +144,8 @@ public class SceneGame extends Scene {
         List<RelativeObject> nearestEnemies = collisionSystem.getNearestObjects(Constants.TAG_ENEMY, (int) player.getTransform().x, (int) player.getTransform().y, 120);
         player.getComponent(Player.class).setNearestEnemies(nearestEnemies);
 
-        double pickupRadius = (16 * 2) * componentPlayerCapabilities.getPickupRadiusMultiplier();
+        ValueChange weaponModifierValueChange = combinedItemStats.getWeaponModifierValueChange(WeaponStatType.PICKUP_RADIUS);
+        double pickupRadius = weaponModifierValueChange.adjustDoubleByValue(32);
         List<RelativeObject> nearestCrystals = collisionSystem.getNearestObjects(Constants.TAG_CRYSTAL, (int) player.getTransform().x, (int) player.getTransform().y, pickupRadius);
         player.getComponent(Player.class).setNearestCrystals(nearestCrystals);
 
@@ -143,6 +154,7 @@ public class SceneGame extends Scene {
         // Handle pause
         if (garnet.getInput().getKeyboard().isKeyFirstPress(InputKeys.KEY_P)) {
             SceneManager.getSceneByName("pause").ifPresent(scene -> ((ScenePause) scene).setPlayerCapabilities(componentPlayerCapabilities));
+            SceneManager.getSceneByName("pause").ifPresent(scene -> ((ScenePause) scene).setCombinedItemStats(combinedItemStats));
             SceneManager.pushSubScene("pause");
         }
 

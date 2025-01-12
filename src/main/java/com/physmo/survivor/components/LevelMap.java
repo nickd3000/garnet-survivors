@@ -75,12 +75,17 @@ public class LevelMap extends Component {
     @Override
     public void tick(double t) {
 
-        double zoom = viewport.getZoom();
-        Vector3 playerPos = player.getTransform();
+        Vector3 playerPosition = player.getTransform();
         double scrollX = viewport.getX();
         double scrollY = viewport.getY();
-        double dx = playerPos.x - (scrollX + ((double) (canvasWidth) / 2)) + 8;
-        double dy = playerPos.y - (scrollY + ((double) (canvasHeight) / 2)) + 8;
+        double dx = playerPosition.x - (scrollX + ((double) (canvasWidth) / 2)) + 8;
+        double dy = playerPosition.y - (scrollY + ((double) (canvasHeight) / 2)) + 8;
+
+        // Snap scroll to player pos if too far to scroll.
+        if (Math.abs(dx)>50 || Math.abs(dy)>50) {
+            viewport.setX(playerPosition.x-(((double) (canvasWidth) / 2)+8));
+            viewport.setY(playerPosition.y-(((double) (canvasHeight) / 2)+8));
+        }
 
         double speed = 5.0 * t;
         viewport.scroll(dx * speed, dy * speed);

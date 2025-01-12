@@ -17,12 +17,16 @@ import com.physmo.survivor.components.PlayerCapability;
 import com.physmo.survivor.components.items.CooldownCharm;
 import com.physmo.survivor.components.items.DuplicatorCharm;
 import com.physmo.survivor.components.items.PierceCharm;
+import com.physmo.survivor.components.items.SizeCharm;
 import com.physmo.survivor.components.items.SpeedCharm;
 import com.physmo.survivor.components.items.StrengthCharm;
+import com.physmo.survivor.components.items.VortexCharm;
+import com.physmo.survivor.components.weapons.AcidStorm;
 import com.physmo.survivor.components.weapons.Bow;
 import com.physmo.survivor.components.weapons.FireWand;
 import com.physmo.survivor.components.weapons.GlaveGun;
 import com.physmo.survivor.components.weapons.IceBow;
+import com.physmo.survivor.components.weapons.IceStorm;
 import com.physmo.survivor.components.weapons.Wand;
 import com.physmo.survivor.components.weapons.Weapon;
 import com.physmo.survivor.gamedata.GDWeapon;
@@ -195,12 +199,16 @@ public class SceneLevelUp extends Scene {
             addNewUpgrades(PierceCharm.class, "Pierce Charm");
             addNewUpgrades(SpeedCharm.class, "Speed Charm");
             addNewUpgrades(CooldownCharm.class, "Cooldown Charm");
+            addNewUpgrades(VortexCharm.class, "Vortex Charm");
+            addNewUpgrades(SizeCharm.class, "Size Charm");
 
             addNewUpgrades(GlaveGun.class, "Glave Gun");
             addNewUpgrades(Bow.class, "Bow");
             addNewUpgrades(FireWand.class, "Fire Wand");
             addNewUpgrades(Wand.class, "Magic Wand");
             addNewUpgrades(IceBow.class, "Ice Bow");
+            addNewUpgrades(AcidStorm.class, "Acid Storm");
+            addNewUpgrades(IceStorm.class, "Ice Storm");
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

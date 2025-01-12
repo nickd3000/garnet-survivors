@@ -39,6 +39,7 @@ public class CellSurvivor extends GarnetApp {
         SceneManager.addScene(new LoadingScene("loadingScene"));
         SceneManager.setActiveScene("loadingScene");
 
+        //garnet.setTickRate(5);
     }
 
     @Override

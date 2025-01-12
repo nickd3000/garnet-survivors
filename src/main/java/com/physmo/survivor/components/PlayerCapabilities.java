@@ -9,6 +9,7 @@ import java.util.Map;
 
 import static com.physmo.garnet.Utils.lerp;
 
+// TODO can we phase this out now?
 public class PlayerCapabilities extends Component {
 
 //    public static int PROJECTILE_SPEED = 1;

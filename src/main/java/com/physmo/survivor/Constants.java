@@ -19,6 +19,6 @@ public class Constants {
     public static final int DRAW_ORDER_PICKUPS = 15;
     public static final int DRAW_ORDER_GROUND = 10;
 
-
+    public static final int NICK = 10;
 
 }

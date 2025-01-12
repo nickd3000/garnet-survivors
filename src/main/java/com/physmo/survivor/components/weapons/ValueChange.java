@@ -40,8 +40,18 @@ public class ValueChange {
     public void combine(ValueChange other) {
         if (other.type == TYPE_UNKNOWN) return;
         if (type == TYPE_UNKNOWN) type = other.type;
-        if (other.type != type)
+        if (other.type != type) {
             throw new RuntimeException("value type mismatch: This type:" + type + " != " + other.type);
+        }
         value = value + other.value;
+    }
+
+    /**
+     * Adjust a double value by this percentage change value.
+     * e.g. newSpeed = adjustDoubleByValue(baseSpeed)
+     */
+    public double adjustDoubleByValue(double valueToAdjust) {
+        double scale = (100 + value) / 100.0;
+        return valueToAdjust * scale;
     }
 }

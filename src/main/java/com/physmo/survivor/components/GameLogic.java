@@ -19,6 +19,26 @@ public class GameLogic extends Component {
     Garnet garnet;
     double gameTime = 0;
 
+    int enemyXpCounter = 0;
+
+    public int getEnemyXpCounter() {
+        return enemyXpCounter;
+    }
+
+    public void setEnemyXpCounter(int enemyXpCounter) {
+        this.enemyXpCounter = enemyXpCounter;
+    }
+
+    public boolean addEnemyXpAndShouldDropCrystal(int amount) {
+        int crystalDropAmount = 20;
+        enemyXpCounter += amount;
+        if (enemyXpCounter>crystalDropAmount) {
+            enemyXpCounter-=crystalDropAmount;
+            return true;
+        }
+        return false;
+    }
+
     public double getGameTime() {
         return gameTime;
     }

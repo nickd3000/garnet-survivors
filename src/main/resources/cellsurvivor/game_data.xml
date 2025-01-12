@@ -342,5 +342,135 @@
 
             </levels>
         </weapon>
+        <weapon id="5" name="acidStorm">
+            <damage>17</damage>
+            <speed>110</speed>
+            <cooldown>5</cooldown>
+            <count>1</count>
+            <pierce>1</pierce>
+            <interval>0.2</interval>
+            <knock_back>1</knock_back>
+            <duration>5</duration>
+            <size>25</size>
+            <levels>
+                <level id="1">
+                    <effect>damage up 15%</effect>
+                    <description>Increase damage 15%</description>
+                </level>
+                <level id="2">
+                    <effect>count up 1</effect>
+                    <description>Increase number of pools by 1</description>
+                </level>
+                <level id="3">
+                    <effect>size up 20%</effect>
+                    <description>Increase size by 20%</description>
+                </level>
+                <level id="4">
+                    <effect>count up 1</effect>
+                    <description>Increase count by 1</description>
+                </level>
+                <level id="5">
+                    <effect>size up 15%</effect>
+                    <description>Increase size by 15%</description>
+                </level>
+                <level id="6">
+                    <effect>damage up 5%</effect>
+                    <description>Increase damage by 5%</description>
+                </level>
+                <level id="7">
+                    <effect>count up 1</effect>
+                </level>
+                <level id="8">
+                    <effect>cooldown down 10%</effect>
+                </level>
+                <level id="9">
+                    <effect>count up 1</effect>
+                </level>
+                <level id="10">
+                    <effect>size up 15%</effect>
+                </level>
+                <level id="11">
+                    <effect>damage up 15%</effect>
+                </level>
+                <level id="12">
+                    <effect>knock_back up 5%</effect>
+                </level>
+                <level id="13">
+                    <effect>cooldown down 10%</effect>
+                </level>
+                <level id="14">
+                    <effect>count up 1</effect>
+                </level>
+                <level id="15">
+                    <effect>cooldown down 10%</effect>
+                </level>
+
+            </levels>
+        </weapon>
+        <weapon id="6" name="iceStorm">
+            <damage>17</damage>
+            <speed>110</speed>
+            <cooldown>5</cooldown>
+            <count>1</count>
+            <pierce>1</pierce>
+            <interval>0.2</interval>
+            <knock_back>1</knock_back>
+            <duration>5</duration>
+            <size>25</size>
+            <levels>
+                <level id="1">
+                    <effect>damage up 15%</effect>
+                    <description>Increase damage 15%</description>
+                </level>
+                <level id="2">
+                    <effect>count up 1</effect>
+                    <description>Increase number of pools by 1</description>
+                </level>
+                <level id="3">
+                    <effect>size up 20%</effect>
+                    <description>Increase size by 20%</description>
+                </level>
+                <level id="4">
+                    <effect>count up 1</effect>
+                    <description>Increase count by 1</description>
+                </level>
+                <level id="5">
+                    <effect>size up 15%</effect>
+                    <description>Increase size by 15%</description>
+                </level>
+                <level id="6">
+                    <effect>damage up 5%</effect>
+                    <description>Increase damage by 5%</description>
+                </level>
+                <level id="7">
+                    <effect>count up 1</effect>
+                </level>
+                <level id="8">
+                    <effect>cooldown down 10%</effect>
+                </level>
+                <level id="9">
+                    <effect>count up 1</effect>
+                </level>
+                <level id="10">
+                    <effect>size up 15%</effect>
+                </level>
+                <level id="11">
+                    <effect>damage up 15%</effect>
+                </level>
+                <level id="12">
+                    <effect>knock_back up 5%</effect>
+                </level>
+                <level id="13">
+                    <effect>cooldown down 10%</effect>
+                </level>
+                <level id="14">
+                    <effect>count up 1</effect>
+                </level>
+                <level id="15">
+                    <effect>cooldown down 10%</effect>
+                </level>
+
+            </levels>
+        </weapon>
     </weapons>
 </gameData>

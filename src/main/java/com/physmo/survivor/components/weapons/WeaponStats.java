@@ -45,6 +45,7 @@ public class WeaponStats {
         stats.get(WeaponStatType.INTERVAL).baseValue = gdWeapon.getInterval();
         stats.get(WeaponStatType.KNOCK_BACK).baseValue = gdWeapon.getKnock_back();
         stats.get(WeaponStatType.DURATION).baseValue = gdWeapon.getDuration();
+        stats.get(WeaponStatType.SIZE).baseValue = gdWeapon.getSize();
 
         for (WeaponStatType statType : WeaponStatType.values()) {
             refreshStat(statType, gdWeapon, level, combinedItemStats);

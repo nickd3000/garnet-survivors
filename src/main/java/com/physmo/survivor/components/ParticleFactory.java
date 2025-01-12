@@ -17,6 +17,10 @@ public class ParticleFactory extends Component {
     public ParticleTemplate glaveTrail;
     public ParticleTemplate lightSmoke;
     public ParticleTemplate flame;
+    public ParticleTemplate acidRing;
+    public ParticleTemplate acid;
+    public ParticleTemplate ice;
+    public ParticleTemplate blood;
 
     ParticleManager particleManager;
     SpriteHelper spriteHelper;
@@ -70,6 +74,45 @@ public class ParticleFactory extends Component {
             int col = p.colorSupplier.getColor(p.getTime());
             spriteHelper.drawSpriteInMap((int) p.position.x, (int) p.position.y, 0, 2, 0, col);
         });
+
+        acidRing = new ParticleTemplate();
+        acidRing.setLifeTime(0.2, 1.5);
+        acidRing.setSpeed(1, 1);
+        acidRing.setPositionJitter(1.1);
+        acidRing.setColorSupplier(new ColorSupplierLinear(new int[]{ColorUtils.asRGBA(0.3f, 1, 0, 0.8f), ColorUtils.asRGBA(0.3f, 1, 0, 0)}));
+        acidRing.setSpeedCurve(new StandardCurve(CurveType.LINE_DOWN));
+        acidRing.setParticleDrawer(p -> {
+            int col = p.colorSupplier.getColor(p.getTime());
+            spriteHelper.drawSpriteInMap((int) p.position.x, (int) p.position.y, 0, 2, 0, col);
+        });
+        acid = new ParticleTemplate();
+        acid.setLifeTime(0.2, 3.5);
+        acid.setSpeed(5, 5);
+        acid.setPositionJitter(2.1);
+        acid.setColorSupplier(new ColorSupplierLinear(new int[]{ColorUtils.asRGBA(0.8f, 1, 0, 0.8f), ColorUtils.asRGBA(0.0f, 0, 1, 0)}));
+        acid.setSpeedCurve(new StandardCurve(CurveType.LINE_DOWN));
+        acid.setParticleDrawer(p -> {
+            int col = p.colorSupplier.getColor(p.getTime());
+            spriteHelper.drawSpriteInMap((int) p.position.x, (int) p.position.y, 11, 1, 0, col);
+        });
+
+        ice = new ParticleTemplate();
+        ice.setLifeTime(0.2, 3.5);
+        ice.setSpeed(5, 5);
+        ice.setPositionJitter(2.1);
+        ice.setColorSupplier(new ColorSupplierLinear(new int[]{ColorUtils.asRGBA(0.3f, 0.5f, 1, 0.8f), ColorUtils.asRGBA(0.0f, 0, 1, 0)}));
+        ice.setSpeedCurve(new StandardCurve(CurveType.LINE_DOWN));
+        ice.setParticleDrawer(p -> {
+            int col = p.colorSupplier.getColor(p.getTime());
+            spriteHelper.drawSpriteInMap((int) p.position.x, (int) p.position.y, 11, 1, 0, col);
+        });
+
+        blood = new ParticleTemplate();
+        blood.setLifeTime(0.2, 1.0);
+        blood.setSpeed(10, 50);
+        blood.setPositionJitter(1.1);
+        blood.setColorSupplier(new ColorSupplierLinear(new int[]{ColorUtils.asRGBA(1, 0, 0, 0.9f), ColorUtils.asRGBA(1, 0, 0, 0)}));
+        blood.setSpeedCurve(new StandardCurve(CurveType.LINE_DOWN));
     }
 
     public void createParticle(ParticleTemplate template, Vector3 position) {

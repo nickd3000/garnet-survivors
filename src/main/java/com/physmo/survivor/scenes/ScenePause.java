@@ -10,7 +10,9 @@ import com.physmo.garnet.toolkit.scene.SceneManager;
 import com.physmo.survivor.Constants;
 import com.physmo.survivor.Resources;
 import com.physmo.survivor.components.PlayerCapabilities;
-import com.physmo.survivor.components.PlayerCapability;
+import com.physmo.survivor.components.items.CombinedItemStats;
+import com.physmo.survivor.components.weapons.ValueChange;
+import com.physmo.survivor.components.weapons.WeaponStatType;
 
 
 public class ScenePause extends Scene {
@@ -19,6 +21,7 @@ public class ScenePause extends Scene {
     Resources resources;
     RegularFont regularFont;
     PlayerCapabilities playerCapabilities;
+    CombinedItemStats combinedItemStats;
 
     public ScenePause(String name) {
         super(name);
@@ -51,7 +54,7 @@ public class ScenePause extends Scene {
         g.setDrawOrder(Constants.DRAW_ORDER_PAUSE_BACKGROUND);
         g.setActiveViewport(Constants.overlayViewportId);
         int[] bufferSize = garnet.getDisplay().getBufferSize();
-        g.filledRect(10, 10, 200, 150);
+        g.filledRect(10, 10, 350, 200);
 
         drawPlayerDetails(g);
     }
@@ -68,19 +71,26 @@ public class ScenePause extends Scene {
 
     public void drawPlayerDetails(Graphics g) {
         g.setColor(0x005500ff);
-        //g.setDrawOrder(Constants.DRAW_ORDER_PAUSE_BACKGROUND+1);
-        regularFont.drawText(g, "hello", 100, 100);
 
-        drawCapability(g, PlayerCapability.PICKUP_RADIUS, "Pickup Radius", 30, 50);
-        drawCapability(g, PlayerCapability.PROJECTILE_MULTIPLIER, "Projectile Multiplier", 30, 65);
-        drawCapability(g, PlayerCapability.PROJECTILE_POWER, "Projectile Power", 30, 80);
-        drawCapability(g, PlayerCapability.PROJECTILE_RATE, "Projectile Rate", 30, 95);
-        drawCapability(g, PlayerCapability.PROJECTILE_SPEED, "Projectile Speed", 30, 110);
+        drawCapability(g, WeaponStatType.PICKUP_RADIUS, "Pickup Radius", 30, 50);
+        drawCapability(g, WeaponStatType.COUNT, "Projectile count", 30, 65);
+
+        drawCapability(g, WeaponStatType.DAMAGE, "Projectile Damage", 30, 80);
+        drawCapability(g, WeaponStatType.COOLDOWN, "Cooldown", 30, 95);
+        drawCapability(g, WeaponStatType.DURATION, "Duration", 30, 110);
     }
 
-    public void drawCapability(Graphics g, PlayerCapability id, String description, int x, int y) {
-        int val = playerCapabilities.getLevel(id);
-        regularFont.drawText(g, description + ": " + val, x, y);
+    public void drawCapability(Graphics g, WeaponStatType id, String description, int x, int y) {
+        ValueChange weaponModifierValueChange = combinedItemStats.getWeaponModifierValueChange(id);
+        String text = "";
+
+        if (weaponModifierValueChange.type == ValueChange.TYPE_PERCENTAGE) {
+            text += description + (weaponModifierValueChange.value > 0 ? " +" : " ") + weaponModifierValueChange.value + "%";
+        } else if (weaponModifierValueChange.type == ValueChange.TYPE_WHOLE_NUMBER) {
+            text += description + " +" + (int) weaponModifierValueChange.value;
+        }
+        regularFont.drawText(g, text, x, y);
+
     }
 
     public void setPlayerCapabilities(PlayerCapabilities playerCapabilities) {
@@ -89,5 +99,8 @@ public class ScenePause extends Scene {
 
     }
 
+    public void setCombinedItemStats(CombinedItemStats combinedItemStats) {
+        this.combinedItemStats = combinedItemStats;
+    }
 
 }

@@ -55,11 +55,6 @@ public class Player extends Component {
         }
 
         if (nearestCrystals != null) {
-//            for (RelativeObject nearestCrystal : nearestCrystals) {
-//                Vector3 transform = nearestCrystal.otherObject.collisionGetGameObject().getTransform();
-//                transform.x -= nearestCrystal.dx * 70.1 * t;
-//                transform.y -= nearestCrystal.dy * 70.1 * t;
-//            }
             for (RelativeObject nearestCrystal : nearestCrystals) {
                 Crystal component = nearestCrystal.getOtherObject().collisionGetGameObject().getComponent(Crystal.class);
                 component.setHoming(true);

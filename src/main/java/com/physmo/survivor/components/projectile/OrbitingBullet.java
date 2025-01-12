@@ -10,10 +10,12 @@ import com.physmo.garnet.toolkit.scene.SceneManager;
 import com.physmo.garnet.toolkit.simplecollision.Collidable;
 import com.physmo.garnet.toolkit.simplecollision.ColliderComponent;
 import com.physmo.garnet.toolkit.simplecollision.CollisionSystem;
-import com.physmo.survivor.components.PlayerCapabilities;
 import com.physmo.survivor.components.ParticleFactory;
+import com.physmo.survivor.components.PlayerCapabilities;
 import com.physmo.survivor.components.ProjectileType;
 import com.physmo.survivor.components.SpriteHelper;
+import com.physmo.survivor.components.weapons.Affliction;
+import com.physmo.survivor.components.weapons.AfflictionPacket;
 import com.physmo.survivor.components.weapons.DamageSupplier;
 
 public class OrbitingBullet extends Component implements DamageSupplier {
@@ -156,8 +158,8 @@ public class OrbitingBullet extends Component implements DamageSupplier {
     }
 
     @Override
-    public boolean causesFreeze() {
-        return false;
+    public AfflictionPacket[] getAfflictionPackets() {
+        return new AfflictionPacket[]{new AfflictionPacket(Affliction.BLEED, 3)};
     }
 
     public void setDamage(double damage) {

@@ -9,8 +9,10 @@ import com.physmo.survivor.components.Crystal;
 import com.physmo.survivor.components.Enemy;
 import com.physmo.survivor.components.GameLogic;
 import com.physmo.survivor.components.ProjectileType;
+import com.physmo.survivor.components.PuddleType;
 import com.physmo.survivor.components.projectile.Bullet;
 import com.physmo.survivor.components.projectile.OrbitingBullet;
+import com.physmo.survivor.components.projectile.Puddle;
 import com.physmo.survivor.gamedata.GDEnemy;
 
 import java.util.List;
@@ -107,6 +109,17 @@ public class EntityFactory {
         obj.addComponent(collider);
 
         obj.addTag(Constants.TAG_BULLET);
+        context.add(obj);
+        collisionSystem.addCollidable(collider);
+    }
+
+    public static void createPuddle(Context context, CollisionSystem collisionSystem, double x, double y, GameObject parent, double radius, PuddleType type, double lifeTime, double damage) {
+        Puddle puddle = new Puddle(type, radius, damage, lifeTime);
+        GameObject obj = new GameObject("puddle").addComponent(puddle);
+
+        ColliderComponent collider = new ColliderComponent();
+        obj.addComponent(collider);
+        obj.getTransform().set(x, y, 0);
         context.add(obj);
         collisionSystem.addCollidable(collider);
     }
