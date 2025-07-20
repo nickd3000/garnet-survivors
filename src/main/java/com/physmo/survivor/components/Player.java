@@ -3,6 +3,7 @@ package com.physmo.survivor.components;
 import com.physmo.garnet.Garnet;
 import com.physmo.garnet.graphics.Graphics;
 import com.physmo.garnet.input.InputAction;
+import com.physmo.garnet.structure.Array;
 import com.physmo.garnet.toolkit.Component;
 import com.physmo.garnet.toolkit.scene.SceneManager;
 import com.physmo.garnet.toolkit.simplecollision.ColliderComponent;
@@ -17,23 +18,23 @@ public class Player extends Component {
 
     Garnet garnet;
 
-    List<RelativeObject> nearestEnemies = new ArrayList<>();
-    List<RelativeObject> nearestCrystals = new ArrayList<>();
+    Array<RelativeObject> nearestEnemies = new Array<>(100);
+    Array<RelativeObject> nearestCrystals = new Array<>(100);
     SpriteHelper spriteHelper;
     CollisionSystem collisionSystem;
     ColliderComponent collider;
     PlayerCapabilities playerCapabilities;
     GameLogic gameLogic;
 
-    public List<RelativeObject> getNearestEnemies() {
+    public Array<RelativeObject> getNearestEnemies() {
         return nearestEnemies;
     }
 
-    public void setNearestEnemies(List<RelativeObject> list) {
+    public void setNearestEnemies(Array<RelativeObject> list) {
         this.nearestEnemies = list;
     }
 
-    public void setNearestCrystals(List<RelativeObject> list) {
+    public void setNearestCrystals(Array<RelativeObject> list) {
         this.nearestCrystals = list;
     }
 

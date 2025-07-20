@@ -1,37 +1,32 @@
 package com.physmo.survivor.components.weapons;
 
 import com.physmo.garnet.graphics.Graphics;
-import com.physmo.garnet.structure.Array;
 import com.physmo.garnet.toolkit.Component;
 import com.physmo.garnet.toolkit.scene.SceneManager;
 import com.physmo.garnet.toolkit.simplecollision.CollisionSystem;
-import com.physmo.garnet.toolkit.simplecollision.RelativeObject;
 import com.physmo.survivor.EntityFactory;
 import com.physmo.survivor.Resources;
 import com.physmo.survivor.Upgradable;
-import com.physmo.survivor.components.Player;
 import com.physmo.survivor.components.PlayerCapabilities;
-import com.physmo.survivor.components.ProjectileType;
+import com.physmo.survivor.components.PuddleType;
 import com.physmo.survivor.components.items.CombinedItemStats;
 import com.physmo.survivor.gamedata.GDWeapon;
 
-import java.util.List;
-import java.util.Random;
+public class AcidStorm extends Component implements Weapon, Upgradable {
 
-public class IceBow extends Component implements Weapon, Upgradable {
-
-    double cooldown = 1.0;
-    Random random = new Random();
     CollisionSystem collisionSystem;
     PlayerCapabilities playerCapabilities;
-    int level = 0;
     WeaponStats weaponStats = new WeaponStats();
     Resources resources;
     GDWeapon gdWeapon;
+    CombinedItemStats combinedItemStats;
+
+    double cooldown;
+    int maxLevel = 15;
+    int level = 0;
     double subShotTimer;
     int pendingShots = 0;
-    int maxLevel = 15;
-    CombinedItemStats combinedItemStats;
+    double spawnDistance = 16 * 5;
 
     @Override
     public void init() {
@@ -39,26 +34,19 @@ public class IceBow extends Component implements Weapon, Upgradable {
         collisionSystem = getObjectByTypeFromParentContext(CollisionSystem.class);
 
         playerCapabilities = getComponentFromParentContext(PlayerCapabilities.class);
-
         resources = SceneManager.getSharedContext().getObjectByType(Resources.class);
 
         gdWeapon = resources.getGameData().getWeaponByName(getDataName());
-
         combinedItemStats = parent.getComponent(CombinedItemStats.class);
-
         weaponStats.refreshStats(gdWeapon, level, combinedItemStats);
-    }
 
-    @Override
-    public String getDataName() {
-        return "icebow";
+        cooldown = weaponStats.getAdjustedStat(WeaponStatType.COOLDOWN).value;
     }
 
     @Override
     public void tick(double t) {
         cooldown -= t;
         if (cooldown < 0) {
-            //cooldown += baseCooldownTime * playerCapabilities.getProjectileRateAdjuster();
             cooldown += weaponStats.getAdjustedStat(WeaponStatType.COOLDOWN).value;
             pendingShots += (int) weaponStats.getAdjustedStat(WeaponStatType.COUNT).value;
         }
@@ -67,26 +55,36 @@ public class IceBow extends Component implements Weapon, Upgradable {
         if (subShotTimer < 0) {
             subShotTimer += weaponStats.getAdjustedStat(WeaponStatType.INTERVAL).value;
             if (pendingShots > 0) {
+                fire(1);
                 pendingShots--;
-                fire();
             }
         }
 
         weaponStats.refreshStatsOnTimeout(t, gdWeapon, level, combinedItemStats);
     }
 
-    public void fire() {
-        Array<RelativeObject> nearestObjects = parent.getComponent(Player.class).getNearestEnemies();
-        if (nearestObjects.isEmpty()) return;
-        RelativeObject relativeObject = nearestObjects.get(random.nextInt(nearestObjects.size()));
-        createBullet(parent.getTransform().x, parent.getTransform().y, relativeObject.dx, relativeObject.dy);
+    public void fire(int count) {
+
+        double x = parent.getTransform().x;
+        double y = parent.getTransform().y;
+        for (int i = 0; i < count; i++) {
+            double a = Math.random() * 360;
+            double d = spawnDistance + (Math.random() * 32);
+            double dx = Math.sin(a) * d;
+            double dy = Math.cos(a) * d;
+
+            createPuddle(x + dx, y + dy);
+        }
     }
 
-    public void createBullet(double x, double y, double dx, double dy) {
-        double bulletSpeed = weaponStats.getAdjustedStat(WeaponStatType.SPEED).value;
-        int pierce = (int) weaponStats.getAdjustedStat(WeaponStatType.PIERCE).value;
+    public void createPuddle(double x, double y) {
+        double size = weaponStats.getAdjustedStat(WeaponStatType.SIZE).value;
         double damage = weaponStats.getAdjustedStat(WeaponStatType.DAMAGE).value;
-        EntityFactory.createSimpleBullet(parent.getContext(), collisionSystem, x, y, dx, dy, bulletSpeed, ProjectileType.ICE_ARROW, pierce, damage);
+        double duration = weaponStats.getAdjustedStat(WeaponStatType.DURATION).value;
+
+        EntityFactory.createPuddle(parent.getContext(), collisionSystem, x, y, parent, size, PuddleType.ACID, duration, damage);
+
+        System.out.println("creating puddle:" + PuddleType.ACID);
     }
 
     @Override
@@ -96,9 +94,13 @@ public class IceBow extends Component implements Weapon, Upgradable {
 
     @Override
     public String getName() {
-        return "Ice Bow";
+        return "Acid Storm";
     }
 
+    @Override
+    public String getDataName() {
+        return "acidstorm";
+    }
 
     @Override
     public int getMaxLevel() {
@@ -120,4 +122,6 @@ public class IceBow extends Component implements Weapon, Upgradable {
     public String getLevelDescription(int level) {
         return gdWeapon.getLevels().get(level).getDescription();
     }
+
+
 }

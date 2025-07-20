@@ -28,8 +28,8 @@ public class EntityFactory {
         enemy.getTransform().set(x, y, 0);
         enemy.addTag(Constants.TAG_ENEMY);
 
-        addColliderToGameObject(collisionSystem, enemy);
-
+        ColliderComponent collider = addColliderToGameObject(collisionSystem, enemy);
+        collider.setCollisionGroup(Constants.COLLISION_GROUP_ENEMY);
         GameLogic gameLogic = context.getComponent(GameLogic.class);
 
 
@@ -39,10 +39,11 @@ public class EntityFactory {
         context.add(enemy);
     }
 
-    public static void addColliderToGameObject(CollisionSystem collisionSystem, GameObject gameObject) {
+    public static ColliderComponent addColliderToGameObject(CollisionSystem collisionSystem, GameObject gameObject) {
         ColliderComponent collider = new ColliderComponent();
         gameObject.addComponent(collider);
         collisionSystem.addCollidable(collider);
+        return collider;
     }
 
     public static void addCrystal(Context context, CollisionSystem collisionSystem, int x, int y) {
@@ -50,8 +51,8 @@ public class EntityFactory {
         entity.getTransform().set(x, y, 0);
         entity.addTag(Constants.TAG_CRYSTAL);
 
-        addColliderToGameObject(collisionSystem, entity);
-
+        ColliderComponent collider = addColliderToGameObject(collisionSystem, entity);
+        collider.setCollisionGroup(Constants.COLLISION_GROUP_PICKUP);
         context.add(entity);
     }
 
@@ -85,6 +86,7 @@ public class EntityFactory {
         Bullet bullet = new Bullet();
         GameObject obj = new GameObject("bullet").addComponent(bullet);
         ColliderComponent collider = new ColliderComponent();
+        collider.setCollisionGroup(Constants.COLLISION_GROUP_PLAYER_WEAPON);
         obj.addComponent(collider);
         obj.getTransform().set(x, y, 0);
         bullet.setDirection(dx, dy);
@@ -106,6 +108,7 @@ public class EntityFactory {
         OrbitingBullet orbitingBullet = new OrbitingBullet(player, radius, speed, bulletNumber, bulletGroupSize, type, lifeTime, damage);
         GameObject obj = new GameObject("bullet").addComponent(orbitingBullet);
         ColliderComponent collider = new ColliderComponent();
+        collider.setCollisionGroup(Constants.COLLISION_GROUP_PLAYER_WEAPON);
         obj.addComponent(collider);
 
         obj.addTag(Constants.TAG_BULLET);
@@ -118,6 +121,7 @@ public class EntityFactory {
         GameObject obj = new GameObject("puddle").addComponent(puddle);
 
         ColliderComponent collider = new ColliderComponent();
+        collider.setCollisionGroup(Constants.COLLISION_GROUP_PLAYER_WEAPON);
         obj.addComponent(collider);
         obj.getTransform().set(x, y, 0);
         context.add(obj);

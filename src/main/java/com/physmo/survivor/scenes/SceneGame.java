@@ -5,11 +5,13 @@ import com.physmo.garnet.Garnet;
 import com.physmo.garnet.graphics.Graphics;
 import com.physmo.garnet.graphics.Viewport;
 import com.physmo.garnet.input.InputKeys;
+import com.physmo.garnet.structure.Array;
 import com.physmo.garnet.structure.Rect;
 import com.physmo.garnet.toolkit.GameObject;
 import com.physmo.garnet.toolkit.particle.ParticleManager;
 import com.physmo.garnet.toolkit.scene.Scene;
 import com.physmo.garnet.toolkit.scene.SceneManager;
+import com.physmo.garnet.toolkit.simplecollision.ColliderComponent;
 import com.physmo.garnet.toolkit.simplecollision.CollisionSystem;
 import com.physmo.garnet.toolkit.simplecollision.RelativeObject;
 import com.physmo.survivor.Constants;
@@ -97,7 +99,8 @@ public class SceneGame extends Scene {
         player.addComponent(combinedItemStats);
         componentPlayerCapabilities = new PlayerCapabilities();
         player.addComponent(componentPlayerCapabilities);
-        EntityFactory.addColliderToGameObject(collisionSystem, player);
+        ColliderComponent playerCollider = EntityFactory.addColliderToGameObject(collisionSystem, player);
+        playerCollider.setCollisionGroup(Constants.COLLISION_GROUP_PLAYER);
         player.addTag(Constants.TAG_PLAYER);
         player.getTransform().set(150*16, 100*16, 0);
         context.add(player);
@@ -134,19 +137,37 @@ public class SceneGame extends Scene {
 
         garnet.getDebugDrawer().setVisible(false);
 
+
+        // Setup collision group matrix.
+        collisionSystem.setCollisionGroupMatrix(Constants.COLLISION_GROUP_ENEMY,Constants.COLLISION_GROUP_ENEMY,false);
+        collisionSystem.setCollisionGroupMatrix(Constants.COLLISION_GROUP_PLAYER_WEAPON,Constants.COLLISION_GROUP_PLAYER_WEAPON,false);
+        collisionSystem.setCollisionGroupMatrix(Constants.COLLISION_GROUP_ENEMY,Constants.COLLISION_GROUP_PLAYER_WEAPON,true);
+        collisionSystem.setCollisionGroupMatrix(Constants.COLLISION_GROUP_PLAYER_WEAPON,Constants.COLLISION_GROUP_ENEMY,true);
+        collisionSystem.setCollisionGroupMatrix(Constants.COLLISION_GROUP_PICKUP,Constants.COLLISION_GROUP_PICKUP,false);
+
+        collisionSystem.setCollisionGroupMatrix(Constants.COLLISION_GROUP_PICKUP,Constants.COLLISION_GROUP_ENEMY,false);
+        collisionSystem.setCollisionGroupMatrix(Constants.COLLISION_GROUP_ENEMY,Constants.COLLISION_GROUP_PICKUP,false);
+
+        collisionSystem.setCollisionGroupMatrix(Constants.COLLISION_GROUP_PICKUP,Constants.COLLISION_GROUP_PLAYER,true);
+        collisionSystem.setCollisionGroupMatrix(Constants.COLLISION_GROUP_PLAYER,Constants.COLLISION_GROUP_PICKUP,true);
+
+
+
     }
 
+    Array<RelativeObject> nearestEnemies = new Array<>(100);
+    Array<RelativeObject> nearestCrystals = new Array<>(100);
     @Override
     public void tick(double delta) {
 
-        collisionSystem.processCloseObjects(Constants.TAG_ENEMY, 20);
+        collisionSystem.processCloseObjects(Constants.COLLISION_GROUP_ENEMY, 20);
 
-        List<RelativeObject> nearestEnemies = collisionSystem.getNearestObjects(Constants.TAG_ENEMY, (int) player.getTransform().x, (int) player.getTransform().y, 120);
+        collisionSystem.getNearestObjects(Constants.COLLISION_GROUP_ENEMY, (int) player.getTransform().x, (int) player.getTransform().y, 120, nearestEnemies);
         player.getComponent(Player.class).setNearestEnemies(nearestEnemies);
 
         ValueChange weaponModifierValueChange = combinedItemStats.getWeaponModifierValueChange(WeaponStatType.PICKUP_RADIUS);
         double pickupRadius = weaponModifierValueChange.adjustDoubleByValue(32);
-        List<RelativeObject> nearestCrystals = collisionSystem.getNearestObjects(Constants.TAG_CRYSTAL, (int) player.getTransform().x, (int) player.getTransform().y, pickupRadius);
+        collisionSystem.getNearestObjects(Constants.COLLISION_GROUP_PICKUP, (int) player.getTransform().x, (int) player.getTransform().y, pickupRadius, nearestCrystals);
         player.getComponent(Player.class).setNearestCrystals(nearestCrystals);
 
         garnet.getDebugDrawer().setUserString("collisions", String.valueOf(collisionSystem.getTestsPerFrame()));

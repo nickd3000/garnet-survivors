@@ -21,7 +21,7 @@
             <groupId>io.github.nickd3000</groupId>
             <artifactId>garnet</artifactId>
 <!--            <version>0.5.3_SNAPSHOT</version>-->
-            <version>0.5.3b-SNAPSHOT</version>
+            <version>0.5.3c-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

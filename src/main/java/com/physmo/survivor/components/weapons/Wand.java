@@ -74,19 +74,19 @@ public class Wand extends Component implements Weapon, Upgradable {
         weaponStats.refreshStatsOnTimeout(t, gdWeapon, level, combinedItemStats);
     }
 
-    public void fire(int count) {
-        List<RelativeObject> nearestObjects = parent.getComponent(Player.class).getNearestEnemies();
-        if (nearestObjects.isEmpty()) return;
+    Array<RelativeObject> nearestEnemies = new Array<>(100);
 
-        // Copy list to array
-        Array<RelativeObject> nos = new Array<>(10);
-        nearestObjects.forEach(nos::add);
+    public void fire(int count) {
+
+
+        nearestEnemies = parent.getComponent(Player.class).getNearestEnemies();
+        if (nearestEnemies.size()<1) return;
 
         // sort array
-        nos.sort(Comparator.comparingDouble(RelativeObject::getDistance));
+        nearestEnemies.sort(Comparator.comparingDouble(RelativeObject::getDistance));
 
         for (int i = 0; i < count; i++) {
-            RelativeObject relativeObject = nos.get(i % nos.size());
+            RelativeObject relativeObject = nearestEnemies.get(i % nearestEnemies.size());
 
             createBullet(parent.getTransform().x, parent.getTransform().y, relativeObject.dx, relativeObject.dy);
         }

@@ -21,4 +21,9 @@ public class Constants {
 
     public static final int NICK = 10;
 
+    public static final int COLLISION_GROUP_PLAYER_WEAPON = 1;
+    public static final int COLLISION_GROUP_ENEMY = 2;
+    public static final int COLLISION_GROUP_PLAYER = 3;
+    public static final int COLLISION_GROUP_PICKUP = 4;
+
 }

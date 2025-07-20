@@ -1,6 +1,7 @@
 package com.physmo.survivor.components.weapons;
 
 import com.physmo.garnet.graphics.Graphics;
+import com.physmo.garnet.structure.Array;
 import com.physmo.garnet.toolkit.Component;
 import com.physmo.garnet.toolkit.scene.SceneManager;
 import com.physmo.garnet.toolkit.simplecollision.CollisionSystem;
@@ -75,7 +76,7 @@ public class Bow extends Component implements Weapon, Upgradable {
     }
 
     public void fire() {
-        List<RelativeObject> nearestObjects = parent.getComponent(Player.class).getNearestEnemies();
+        Array<RelativeObject> nearestObjects = parent.getComponent(Player.class).getNearestEnemies();
         if (nearestObjects.isEmpty()) return;
         RelativeObject relativeObject = nearestObjects.get(random.nextInt(nearestObjects.size()));
         createBullet(parent.getTransform().x, parent.getTransform().y, relativeObject.dx, relativeObject.dy);
