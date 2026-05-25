@@ -8,6 +8,7 @@ import com.physmo.garnet.toolkit.simplecollision.Collidable;
 import com.physmo.garnet.toolkit.simplecollision.ColliderComponent;
 import com.physmo.garnet.toolkit.simplecollision.CollisionSystem;
 import com.physmo.survivor.Constants;
+import com.physmo.survivor.Message;
 
 public class Crystal extends Component {
     SpriteHelper spriteHelper;
@@ -17,6 +18,13 @@ public class Crystal extends Component {
     double dx = 0, dy = 0;
     GameObject player;
     double homingForce = 455;
+
+    @Override
+    public void onMessage(String name, Object data) {
+        if (name.equals(Message.HOMING_REQUEST)) {
+            setHoming(true);
+        }
+    }
 
     public void setHoming(boolean homing) {
         if (this.homing) return;
@@ -32,7 +40,6 @@ public class Crystal extends Component {
         spriteHelper = getComponentFromParentContext(SpriteHelper.class);
         collider = parent.getComponent(ColliderComponent.class);
     }
-
 
     @Override
     public void tick(double t) {
@@ -54,7 +61,6 @@ public class Crystal extends Component {
             dx -= dx * 0.5 * t;
             dy -= dy * 0.5 * t;
         }
-
 
         collider.setCollisionRegion(-3, -3, 6, 6);
     }

@@ -16,9 +16,12 @@ import com.physmo.survivor.components.ProjectileType;
 import com.physmo.survivor.components.SpriteHelper;
 import com.physmo.survivor.components.weapons.Affliction;
 import com.physmo.survivor.components.weapons.AfflictionPacket;
-import com.physmo.survivor.components.weapons.DamageSupplier;
+import com.physmo.survivor.Constants;
+import com.physmo.survivor.Message;
+import com.physmo.survivor.messages.DamageMessage;
+import java.util.Arrays;
 
-public class OrbitingBullet extends Component implements DamageSupplier {
+public class OrbitingBullet extends Component {
 
     double speed = 50;
     ProjectileType projectileType = ProjectileType.ARROW;
@@ -67,11 +70,11 @@ public class OrbitingBullet extends Component implements DamageSupplier {
         particleFactory = getComponentFromParentContext(ParticleFactory.class);
         colliderComponent = parent.getComponent(ColliderComponent.class);
 
-//        colliderComponent.setCallbackEnter(target -> {
-//            if (target.hasTag(Constants.TAG_ENEMY)) {
-//                killMe = true;
-//            }
-//        });
+        colliderComponent.setCallbackEnter(target -> {
+            if (target.hasTag(Constants.TAG_ENEMY)) {
+                target.sendMessage(Message.DAMAGE, new DamageMessage(damage, Arrays.asList(getAfflictionPackets())));
+            }
+        });
 
 //        ColorSupplierLinear glaveColor = new ColorSupplierLinear(
 //                new int[]{
@@ -152,12 +155,10 @@ public class OrbitingBullet extends Component implements DamageSupplier {
         this.projectileType = type;
     }
 
-    @Override
     public double getDamage() {
         return damage;
     }
 
-    @Override
     public AfflictionPacket[] getAfflictionPackets() {
         return new AfflictionPacket[]{new AfflictionPacket(Affliction.BLEED, 3)};
     }

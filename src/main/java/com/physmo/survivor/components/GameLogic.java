@@ -4,7 +4,11 @@ import com.physmo.garnet.Garnet;
 import com.physmo.garnet.graphics.Graphics;
 import com.physmo.garnet.toolkit.Component;
 import com.physmo.garnet.toolkit.scene.SceneManager;
+import com.physmo.survivor.Message;
 import com.physmo.survivor.scenes.SceneLevelUp;
+
+
+
 
 public class GameLogic extends Component {
 
@@ -78,6 +82,15 @@ public class GameLogic extends Component {
         return playerLevel;
     }
 
+    @Override
+    public void onMessage(String name, Object data) {
+        if (name.equals(Message.SCORE_INCREASE) && data instanceof Integer event) {
+            addToScore(event);
+        } else if (name.equals(Message.XP_INCREASE) && data instanceof Integer event) {
+            increaseXp(event);
+        }
+    }
+
     public void increaseXp(int amount) {
         xp += amount;
         int target = getXpToLevelUp();
@@ -94,6 +107,7 @@ public class GameLogic extends Component {
     public void increaseLevel() {
         playerLevel++;
         setCurrentScore(playerLevel);
+        parent.getContext().broadcastMessage(Message.LEVEL_UP, playerLevel);
         showLevelUpScreen();
     }
 

@@ -10,6 +10,9 @@ import com.physmo.garnet.toolkit.simplecollision.ColliderComponent;
 import com.physmo.garnet.toolkit.simplecollision.CollisionSystem;
 import com.physmo.garnet.toolkit.simplecollision.RelativeObject;
 import com.physmo.survivor.Constants;
+import com.physmo.survivor.Message;
+
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,8 +60,7 @@ public class Player extends Component {
 
         if (nearestCrystals != null) {
             for (RelativeObject nearestCrystal : nearestCrystals) {
-                Crystal component = nearestCrystal.getOtherObject().collisionGetGameObject().getComponent(Crystal.class);
-                component.setHoming(true);
+                nearestCrystal.getOtherObject().collisionGetGameObject().sendMessage(Message.HOMING_REQUEST, null);
             }
         }
 
@@ -85,7 +87,7 @@ public class Player extends Component {
         collider.setCallbackEnter(target -> {
             if (target.hasTag(Constants.TAG_CRYSTAL)) {
                 target.getComponent(Crystal.class).requestKill();
-                gameLogic.increaseXp(1);
+                parent.getContext().broadcastMessage(Message.XP_INCREASE, 1);
             }
         });
 

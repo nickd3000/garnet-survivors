@@ -7,15 +7,17 @@ import com.physmo.garnet.toolkit.simplecollision.Collidable;
 import com.physmo.garnet.toolkit.simplecollision.ColliderComponent;
 import com.physmo.garnet.toolkit.simplecollision.CollisionSystem;
 import com.physmo.survivor.Constants;
+import com.physmo.survivor.Message;
 import com.physmo.survivor.components.ParticleFactory;
 import com.physmo.survivor.components.PlayerCapabilities;
 import com.physmo.survivor.components.PuddleType;
 import com.physmo.survivor.components.SpriteHelper;
 import com.physmo.survivor.components.weapons.Affliction;
 import com.physmo.survivor.components.weapons.AfflictionPacket;
-import com.physmo.survivor.components.weapons.DamageSupplier;
+import com.physmo.survivor.messages.DamageMessage;
+import java.util.Arrays;
 
-public class Puddle extends Component implements DamageSupplier {
+public class Puddle extends Component {
 
 
     PuddleType puddleType;
@@ -51,6 +53,7 @@ public class Puddle extends Component implements DamageSupplier {
 
         colliderComponent.setCallbackEnter(target -> {
             if (target.hasTag(Constants.TAG_ENEMY)) {
+                target.sendMessage(Message.DAMAGE, new DamageMessage(damage, Arrays.asList(getAfflictionPackets())));
                 numEnemiesHit++;
             }
         });
@@ -120,12 +123,10 @@ public class Puddle extends Component implements DamageSupplier {
     }
 
 
-    @Override
     public double getDamage() {
         return damage;
     }
 
-    @Override
     public AfflictionPacket[] getAfflictionPackets() {
         if (puddleType == PuddleType.ACID) {
             return new AfflictionPacket[]{new AfflictionPacket(Affliction.ACID, 8)};

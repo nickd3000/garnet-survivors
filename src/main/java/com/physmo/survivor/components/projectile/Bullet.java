@@ -6,15 +6,18 @@ import com.physmo.garnet.toolkit.simplecollision.Collidable;
 import com.physmo.garnet.toolkit.simplecollision.ColliderComponent;
 import com.physmo.garnet.toolkit.simplecollision.CollisionSystem;
 import com.physmo.survivor.Constants;
+import com.physmo.survivor.Message;
 import com.physmo.survivor.components.PlayerCapabilities;
 import com.physmo.survivor.components.ParticleFactory;
 import com.physmo.survivor.components.ProjectileType;
 import com.physmo.survivor.components.SpriteHelper;
 import com.physmo.survivor.components.weapons.Affliction;
 import com.physmo.survivor.components.weapons.AfflictionPacket;
-import com.physmo.survivor.components.weapons.DamageSupplier;
+import com.physmo.survivor.messages.DamageMessage;
 
-public class Bullet extends Component implements DamageSupplier {
+import java.util.Arrays;
+
+public class Bullet extends Component {
 
     double speed = 50;
     ProjectileType projectileType = ProjectileType.ARROW;
@@ -46,6 +49,7 @@ public class Bullet extends Component implements DamageSupplier {
 
         colliderComponent.setCallbackEnter(target -> {
             if (target.hasTag(Constants.TAG_ENEMY)) {
+                target.sendMessage(Message.DAMAGE, new DamageMessage(damage, Arrays.asList(getAfflictionPackets())));
                 numEnemiesHit++;
                 if (numEnemiesHit >= pierce) {
                     killMe = true;
@@ -126,14 +130,12 @@ public class Bullet extends Component implements DamageSupplier {
         this.pierce = pierce;
     }
 
-    @Override
     public double getDamage() {
         return damage;
     }
 
 
 
-    @Override
     public AfflictionPacket[] getAfflictionPackets() {
 
         if (projectileType == ProjectileType.ARROW) {

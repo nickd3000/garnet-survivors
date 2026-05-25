@@ -10,11 +10,14 @@ import com.physmo.garnet.toolkit.simplecollision.CollisionSystem;
 import com.physmo.garnet.toolkit.simplecollision.RelativeObject;
 import com.physmo.survivor.Constants;
 import com.physmo.survivor.EntityFactory;
+import com.physmo.survivor.Message;
 import com.physmo.survivor.Resources;
 import com.physmo.survivor.TimedEvent;
 import com.physmo.survivor.components.weapons.Affliction;
 import com.physmo.survivor.components.weapons.AfflictionPacket;
-import com.physmo.survivor.components.weapons.DamageSupplier;
+import com.physmo.survivor.messages.DamageMessage;
+
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,25 +67,6 @@ public class Enemy extends Component {
         collider.setCallbackProximity(relativeObject -> {
             closeObjects.add(relativeObject); // Just store for now and process the event in the tick function.
         });
-        collider.setCallbackEnter(target -> {
-            //if (target.hasTag(Constants.TAG_BULLET)) {
-                for (Component component : target.getComponents()) {
-                    if (component instanceof DamageSupplier damageSupplier) {
-
-                        health -= damageSupplier.getDamage();
-
-                        hitFlashEvent.start(0.2);
-
-                        processAfflictionPackets(damageSupplier.getAfflictionPackets());
-
-
-                        pushBackEvent.start(0.5);
-
-                    }
-                }
-
-            //}
-        });
 
         resources = SceneManager.getSharedContext().getObjectByType(Resources.class);
         gameLogic = getComponentFromParentContext(GameLogic.class);
@@ -96,6 +80,18 @@ public class Enemy extends Component {
         this.health = health;
         this.sprite[0] = spriteX;
         this.sprite[1] = spriteY;
+    }
+
+    @Override
+    public void onMessage(String name, Object data) {
+        if (name.equals(Message.DAMAGE) && data instanceof DamageMessage message) {
+            health -= message.damage();
+            hitFlashEvent.start(0.2);
+            if (message.afflictionPackets() != null) {
+                processAfflictionPackets(message.afflictionPackets().toArray(new AfflictionPacket[0]));
+            }
+            pushBackEvent.start(0.5);
+        }
     }
 
     public void processAfflictionPackets(AfflictionPacket[] afflictionPackets) {
@@ -161,7 +157,7 @@ public class Enemy extends Component {
             parent.destroy();
 
 
-            gameLogic.addToScore(100);
+            parent.getContext().broadcastMessage(Message.SCORE_INCREASE, 100);
 
             if (gameLogic.addEnemyXpAndShouldDropCrystal(10)) // * playerCapabilities.getLuckMultiplier()) {
             {
