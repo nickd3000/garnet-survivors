@@ -11,9 +11,9 @@ import com.physmo.survivor.Resources;
 
 public class Hud extends Component {
     Resources resources;
-    Graphics g;
-    Garnet garnet;
-    Player player;
+    //Graphics g;
+    //Garnet garnet;
+    //Player player;
     GameLogic gameLogic;
 
     double hpBarSpeed = 5;
@@ -24,9 +24,9 @@ public class Hud extends Component {
     @Override
     public void init() {
         resources = SceneManager.getSharedContext().getObjectByType(Resources.class);
-        garnet = SceneManager.getSharedContext().getObjectByType(Garnet.class);
-        g = garnet.getGraphics();
-        player = getComponentFromParentContext(Player.class);
+        //garnet = SceneManager.getSharedContext().getObjectByType(Garnet.class);
+        //g = garnet.getGraphics();
+        //player = getComponentFromParentContext(Player.class);
         gameLogic = getComponentFromParentContext(GameLogic.class);
     }
 

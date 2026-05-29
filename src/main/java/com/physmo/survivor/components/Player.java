@@ -102,6 +102,11 @@ public class Player extends Component {
         int y = (int) parent.getTransform().y;
 
         spriteHelper.drawSpriteInMap(x - 8, y - 8, 2, 0);
+
+        nearestEnemies.forEach(e -> {
+            spriteHelper.drawSpriteInMap(e.originX, e.originY, 2, 0);
+
+        });
     }
 
 

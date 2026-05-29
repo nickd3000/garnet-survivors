@@ -80,7 +80,7 @@ public class Wand extends Component implements Weapon, Upgradable {
 
 
         nearestEnemies = parent.getComponent(Player.class).getNearestEnemies();
-        if (nearestEnemies.size()<1) return;
+        if (nearestEnemies.isEmpty()) return;
 
         // sort array
         nearestEnemies.sort(Comparator.comparingDouble(RelativeObject::getDistance));

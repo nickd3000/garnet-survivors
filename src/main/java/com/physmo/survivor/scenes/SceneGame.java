@@ -26,14 +26,11 @@ import com.physmo.survivor.components.PlayerCapabilities;
 import com.physmo.survivor.components.ParticleFactory;
 import com.physmo.survivor.components.SpriteHelper;
 import com.physmo.survivor.components.items.CombinedItemStats;
-import com.physmo.survivor.components.weapons.AcidStorm;
 import com.physmo.survivor.components.weapons.Bow;
 import com.physmo.survivor.components.weapons.IceStorm;
 import com.physmo.survivor.components.weapons.ValueChange;
-import com.physmo.survivor.components.weapons.Wand;
 import com.physmo.survivor.components.weapons.WeaponStatType;
 
-import java.util.List;
 import java.util.Random;
 
 public class SceneGame extends Scene {
@@ -161,6 +158,9 @@ public class SceneGame extends Scene {
     public void tick(double delta) {
 
         collisionSystem.processCloseObjects(Constants.COLLISION_GROUP_ENEMY, 20);
+
+        nearestEnemies.clear();
+        nearestCrystals.clear();
 
         collisionSystem.getNearestObjects(Constants.COLLISION_GROUP_ENEMY, (int) player.getTransform().x, (int) player.getTransform().y, 120, nearestEnemies);
         player.getComponent(Player.class).setNearestEnemies(nearestEnemies);
