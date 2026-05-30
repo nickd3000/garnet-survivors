@@ -28,6 +28,8 @@ public class LevelMap extends Component {
     int canvasHeight = 216;
 
     Viewport viewport;
+    double scrollX = 0;
+    double scrollY = 0;
 
     public LevelMap() {
 
@@ -76,28 +78,34 @@ public class LevelMap extends Component {
     public void tick(double t) {
 
         Vector3 playerPosition = player.getTransform();
-        double scrollX = viewport.getX();
-        double scrollY = viewport.getY();
         double dx = playerPosition.x - (scrollX + ((double) (canvasWidth) / 2)) + 8;
         double dy = playerPosition.y - (scrollY + ((double) (canvasHeight) / 2)) + 8;
 
         // Snap scroll to player pos if too far to scroll.
-        if (Math.abs(dx)>50 || Math.abs(dy)>50) {
-            viewport.setX(playerPosition.x-(((double) (canvasWidth) / 2)+8));
-            viewport.setY(playerPosition.y-(((double) (canvasHeight) / 2)+8));
+        if (Math.abs(dx) > 50 || Math.abs(dy) > 50) {
+            scrollX = playerPosition.x - (((double) (canvasWidth) / 2) + 8);
+            scrollY = playerPosition.y - (((double) (canvasHeight) / 2) + 8);
         }
 
         double speed = 5.0 * t;
-        viewport.scroll(dx * speed, dy * speed);
+        scrollX += dx * speed;
+        scrollY += dy * speed;
+
+        viewport.setX((int) scrollX);
+        viewport.setY((int) scrollY);
 
     }
 
     @Override
     public void draw(Graphics g) {
-
-        g.setColor(0xffffff);
+        // Use opaque white. Color literals in this codebase are RRGGBBAA; 0xffffff would be fully transparent.
+        g.setColor(0xffffffff);
         g.setDrawOrder(Constants.DRAW_ORDER_GROUND);
-        tileGridDrawer.draw(graphics, 20, 20);
+        // IMPORTANT: use the Graphics instance passed into draw(), which is bound
+        // to the current render target (e.g., the CRT RenderTexture in CellSurvivor).
+        // Using a cached Graphics field here can lead to drawing to the wrong target
+        // or no visible output when rendering via FBOs.
+        tileGridDrawer.draw(g, 20, 20);
 
     }
 

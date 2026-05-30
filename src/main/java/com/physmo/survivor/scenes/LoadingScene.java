@@ -24,7 +24,7 @@ public class LoadingScene extends Scene {
     @Override
     public void tick(double delta) {
         clock += delta;
-        if (clock>0.2) {
+        if (clock>0.3) {
             SceneManager.setActiveScene("game");
         }
     }
