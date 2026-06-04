@@ -91,8 +91,8 @@ public class LevelMap extends Component {
         scrollX += dx * speed;
         scrollY += dy * speed;
 
-        viewport.setX((int) scrollX);
-        viewport.setY((int) scrollY);
+        viewport.setScrollX((int) scrollX);
+        viewport.setScrollY((int) scrollY);
 
     }
 

@@ -7,8 +7,11 @@ import com.physmo.garnet.input.InputKeys;
 import com.physmo.garnet.text.RegularFont;
 import com.physmo.garnet.toolkit.Component;
 import com.physmo.garnet.toolkit.GameObject;
+import com.physmo.garnet.toolkit.curve.CurveType;
+import com.physmo.garnet.toolkit.curve.StandardCurve;
 import com.physmo.garnet.toolkit.scene.Scene;
 import com.physmo.garnet.toolkit.scene.SceneManager;
+import com.physmo.garnet.toolkit.stateMachine.StateMachine;
 import com.physmo.survivor.Constants;
 import com.physmo.survivor.Resources;
 import com.physmo.survivor.Upgradable;
@@ -54,6 +57,7 @@ public class SceneLevelUp extends Scene {
     List<Upgrade> upgrades = new ArrayList<>();
     List<Integer> upgradeIndexes = new ArrayList<>();
 
+    int[] windowCenter = new int[2];
     int[] windowSize = new int[2];
     int[] windowMargin = new int[2];
 
@@ -62,6 +66,8 @@ public class SceneLevelUp extends Scene {
     }
     double timer=0;
 
+    StateMachine stateMachine = new StateMachine();
+
     @Override
     public void init() {
         garnet = SceneManager.getSharedContext().getObjectByType(Garnet.class);
@@ -69,17 +75,52 @@ public class SceneLevelUp extends Scene {
 
         regularFont = resources.getRegularFont();
 
+        windowCenter[0] = (int) (garnet.getDisplay().getCanvasSize()[0] * 0.5);
+        windowCenter[1] = (int) (garnet.getDisplay().getCanvasSize()[1] * 0.5);
         windowSize[0] = (int) (garnet.getDisplay().getCanvasSize()[0] * 0.9);
         windowSize[1] = (int) (garnet.getDisplay().getCanvasSize()[1] * 0.9);
         windowMargin[0] = (garnet.getDisplay().getCanvasSize()[0] - windowSize[0]) / 2;
         windowMargin[1] = (garnet.getDisplay().getCanvasSize()[1] - windowSize[1]) / 2;
 
         System.out.println(windowSize[0] + " " + windowSize[1] + windowMargin[0] + " " + windowMargin[1]);
+
+        buildStateMachine();
+
+
+    }
+
+    double boxScale = 0;
+    double stateTimer = 0;
+    StandardCurve easeInCurve = new StandardCurve(CurveType.EASE_IN_SINE);
+
+    public void buildStateMachine() {
+        stateMachine.addState("show_start", (t) -> {
+            stateMachine.changeState("growing_box");
+            stateTimer=0;
+            boxScale=0;
+            System.out.println("A");
+        });
+        stateMachine.addState("growing_box", (t) -> {
+            double timeLimit=0.25;
+            stateTimer=Math.min(timeLimit, stateTimer+t);
+
+            boxScale = easeInCurve.value(stateTimer/timeLimit);
+
+            if (stateTimer>=timeLimit) {
+                stateMachine.changeState("running");
+            }
+            System.out.println("B");
+        });
+        stateMachine.addState("running", (t) -> {
+            // main
+        });
     }
 
     @Override
     public void tick(double delta) {
         timer+=delta;
+
+        stateMachine.tick(delta);
 
         if (garnet.getInput().getKeyboard().isKeyFirstPress(InputKeys.KEY_L)) {
             SceneManager.popSubScene("levelUp");
@@ -113,9 +154,19 @@ public class SceneLevelUp extends Scene {
         g.setDrawOrder(Constants.DRAW_ORDER_PAUSE_BACKGROUND);
         g.setActiveViewport(Constants.overlayViewportId);
         g.setColor(0xffffffaa);
-        g.filledRect(windowMargin[0], windowMargin[1], windowSize[0], windowSize[1]);
+        //g.filledRect(windowMargin[0], windowMargin[1], windowSize[0], windowSize[1]);
+        drawBackground(g);
+        if (stateMachine.getCurrentStateName().equals("running")) {
         g.setDrawOrder(Constants.DRAW_ORDER_PAUSE_FOREGROUND);
         drawSelections(g);
+        }
+    }
+
+    public void drawBackground(Graphics g) {
+        g.setColor(0xffffffaa);
+        int halfWidth = (int)(((double) windowSize[0] / 2)*boxScale);
+        int halfHeight = (int)(((double) windowSize[1] / 2)*boxScale);
+        g.filledRect(windowCenter[0]-halfWidth, windowCenter[1]-halfHeight, halfWidth*2, halfHeight*2);
     }
 
     public void drawSelections(Graphics g) {
@@ -148,6 +199,7 @@ public class SceneLevelUp extends Scene {
 
     @Override
     public void onMakeActive() {
+        stateMachine.changeState("show_start");
         threeCapabilities = getThreeCapabilities();
         findUpgrades();
     }
