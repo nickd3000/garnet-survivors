@@ -1,6 +1,7 @@
 package com.physmo.survivor.components;
 
 import com.physmo.garnet.Garnet;
+import com.physmo.garnet.drawablebatch.Sprite2D;
 import com.physmo.garnet.graphics.Graphics;
 import com.physmo.garnet.toolkit.Component;
 import com.physmo.garnet.toolkit.scene.SceneManager;
@@ -16,23 +17,23 @@ public class SpriteHelper extends Component {
 
     int spriteColor = 0xffffffff;
 
-    public void drawSpriteInMap(double x, double y, double tileX, double tileY) {
+    public Sprite2D drawSpriteInMap(double x, double y, double tileX, double tileY) {
         g.setActiveViewport(Constants.tileGridViewportId);
         g.setColor(spriteColor);
-        g.drawImage(resources.getSpritesTilesheet(), x, y, (int) tileX, (int) tileY);
+        return g.drawImage(resources.getSpritesTilesheet(), x, y, (int) tileX, (int) tileY);
     }
 
-    public void drawSpriteInMap(int x, int y, int tileX, int tileY, double angle) {
+    public Sprite2D drawSpriteInMap(int x, int y, int tileX, int tileY, double angle) {
         g.setActiveViewport(Constants.tileGridViewportId);
         g.setColor(spriteColor);
-        g.drawImage(resources.getSpritesTilesheet(), x, y, tileX, tileY, angle);
+        return g.drawImage(resources.getSpritesTilesheet(), x, y, tileX, tileY, angle);
     }
 
-    public void drawSpriteInMap(int x, int y, int tileX, int tileY, double angle, int col) {
+    public Sprite2D drawSpriteInMap(int x, int y, int tileX, int tileY, double angle, int col) {
         g.setActiveViewport(Constants.tileGridViewportId);
         g.setColor(col);
         g.setDrawOrder(Constants.DRAW_ORDER_ABOVE_GROUND);
-        g.drawImage(resources.getSpritesTilesheet(), x, y, tileX, tileY, angle);
+        return g.drawImage(resources.getSpritesTilesheet(), x, y, tileX, tileY, angle);
     }
 
     @Override

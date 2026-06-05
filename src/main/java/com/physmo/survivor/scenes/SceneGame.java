@@ -2,6 +2,7 @@ package com.physmo.survivor.scenes;
 
 import com.physmo.garnet.ColorUtils;
 import com.physmo.garnet.Garnet;
+import com.physmo.garnet.drawablebatch.BlendMode;
 import com.physmo.garnet.graphics.Graphics;
 import com.physmo.garnet.graphics.Viewport;
 import com.physmo.garnet.input.InputKeys;
@@ -198,7 +199,8 @@ public class SceneGame extends Scene {
             garnet.getGraphics().setColor(p.colorSupplier.getColor(pAge));
             garnet.getGraphics().setDrawOrder(Constants.DRAW_ORDER_ABOVE_GROUND);
             garnet.getGraphics().drawImage(resources.getSpritesTilesheet(), (int) (p.position.x) - 8,
-                    (int) (p.position.y) - 8, 2, 1);
+                    (int) (p.position.y) - 8, 2, 1)
+                    .setBlendMode(BlendMode.ADDITIVE);
         });
 
         context.add(particleManager);

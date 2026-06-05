@@ -1,6 +1,7 @@
 package com.physmo.survivor.components;
 
 import com.physmo.garnet.ColorUtils;
+import com.physmo.garnet.drawablebatch.BlendMode;
 import com.physmo.garnet.graphics.Graphics;
 import com.physmo.garnet.structure.Vector3;
 import com.physmo.garnet.toolkit.Component;
@@ -50,7 +51,8 @@ public class ParticleFactory extends Component {
         glaveTrail.setSpeedCurve(new StandardCurve(CurveType.LINE_DOWN));
         glaveTrail.setParticleDrawer(p -> {
             int col = p.colorSupplier.getColor(p.getTime());
-            spriteHelper.drawSpriteInMap((int) p.position.x, (int) p.position.y, 4, 2, 0, col);
+            spriteHelper.drawSpriteInMap((int) p.position.x, (int) p.position.y, 4, 2, 0, col)
+                    .setBlendMode(BlendMode.ADDITIVE);
         });
 
         lightSmoke = new ParticleTemplate();
@@ -61,7 +63,8 @@ public class ParticleFactory extends Component {
         lightSmoke.setSpeedCurve(new StandardCurve(CurveType.LINE_DOWN));
         lightSmoke.setParticleDrawer(p -> {
             int col = p.colorSupplier.getColor(p.getTime());
-            spriteHelper.drawSpriteInMap((int) p.position.x, (int) p.position.y, 11, 1, 0, col);
+            spriteHelper.drawSpriteInMap((int) p.position.x, (int) p.position.y, 11, 1, 0, col)
+                    .setBlendMode(BlendMode.ADDITIVE);
         });
 
         flame = new ParticleTemplate();
@@ -72,7 +75,8 @@ public class ParticleFactory extends Component {
         flame.setSpeedCurve(new StandardCurve(CurveType.LINE_DOWN));
         flame.setParticleDrawer(p -> {
             int col = p.colorSupplier.getColor(p.getTime());
-            spriteHelper.drawSpriteInMap((int) p.position.x, (int) p.position.y, 0, 2, 0, col);
+            spriteHelper.drawSpriteInMap((int) p.position.x, (int) p.position.y, 0, 2, 0, col)
+                    .setBlendMode(BlendMode.ADDITIVE);
         });
 
         acidRing = new ParticleTemplate();
@@ -83,7 +87,8 @@ public class ParticleFactory extends Component {
         acidRing.setSpeedCurve(new StandardCurve(CurveType.LINE_DOWN));
         acidRing.setParticleDrawer(p -> {
             int col = p.colorSupplier.getColor(p.getTime());
-            spriteHelper.drawSpriteInMap((int) p.position.x, (int) p.position.y, 0, 2, 0, col);
+            spriteHelper.drawSpriteInMap((int) p.position.x, (int) p.position.y, 0, 2, 0, col)
+                    .setBlendMode(BlendMode.ADDITIVE);
         });
         acid = new ParticleTemplate();
         acid.setLifeTime(0.2, 3.5);
@@ -93,7 +98,8 @@ public class ParticleFactory extends Component {
         acid.setSpeedCurve(new StandardCurve(CurveType.LINE_DOWN));
         acid.setParticleDrawer(p -> {
             int col = p.colorSupplier.getColor(p.getTime());
-            spriteHelper.drawSpriteInMap((int) p.position.x, (int) p.position.y, 11, 1, 0, col);
+            spriteHelper.drawSpriteInMap((int) p.position.x, (int) p.position.y, 11, 1, 0, col)
+                    .setBlendMode(BlendMode.ADDITIVE);
         });
 
         ice = new ParticleTemplate();
@@ -104,7 +110,8 @@ public class ParticleFactory extends Component {
         ice.setSpeedCurve(new StandardCurve(CurveType.LINE_DOWN));
         ice.setParticleDrawer(p -> {
             int col = p.colorSupplier.getColor(p.getTime());
-            spriteHelper.drawSpriteInMap((int) p.position.x, (int) p.position.y, 11, 1, 0, col);
+            spriteHelper.drawSpriteInMap((int) p.position.x, (int) p.position.y, 11, 1, 0, col)
+                    .setBlendMode(BlendMode.ADDITIVE);
         });
 
         blood = new ParticleTemplate();

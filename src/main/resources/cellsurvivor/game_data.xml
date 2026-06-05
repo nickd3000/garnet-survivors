@@ -5,7 +5,7 @@
         <enemy id="0" name="Slime" speed="0.8" health="5">
             <sprite>0,6</sprite>
         </enemy>
-        <enemy id="1" name="Snake" speed="1.1" health="15">
+        <enemy id="1" name="Snake" speed="1.8" health="15">
             <sprite>10,3</sprite>
         </enemy>
         <enemy id="2" name="Goblin" speed="0.9" health="25">
@@ -14,13 +14,13 @@
         <enemy id="3" name="Ogre 1" speed="0.8" health="30">
             <sprite>1,8</sprite>
         </enemy>
-        <enemy id="4" name="Ogre 2" speed="0.9" health="35">
+        <enemy id="4" name="Ogre 2" speed="1.2" health="35">
             <sprite>2,8</sprite>
         </enemy>
-        <enemy id="5" name="Turtle 1" speed="0.7" health="60">
+        <enemy id="5" name="Turtle 1" speed="0.8" health="60">
             <sprite>1,4</sprite>
         </enemy>
-        <enemy id="6" name="Crab" speed="0.8" health="60">
+        <enemy id="6" name="Crab" speed="1.3" health="60">
             <sprite>4,4</sprite>
         </enemy>
         <enemy id="7" name="Mummy" speed="1.0" health="20">
@@ -29,13 +29,13 @@
         <enemy id="8" name="Tree" speed="0.7" health="50">
             <sprite>7,6</sprite>
         </enemy>
-        <enemy id="9" name="EyeBall" speed="0.75" health="35">
+        <enemy id="9" name="EyeBall" speed="1.5" health="35">
             <sprite>7,7</sprite>
         </enemy>
-        <enemy id="10" name="Cyclops" speed="0.8" health="45">
+        <enemy id="10" name="Cyclops" speed="1.2" health="45">
             <sprite>11,5</sprite>
         </enemy>
-        <enemy id="11" name="Beetle" speed="0.8" health="45">
+        <enemy id="11" name="Beetle" speed="1.5" health="45">
             <sprite>2,4</sprite>
         </enemy>
     </enemies>

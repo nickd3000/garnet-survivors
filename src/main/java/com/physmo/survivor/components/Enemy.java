@@ -12,6 +12,7 @@ import com.physmo.survivor.Constants;
 import com.physmo.survivor.EntityFactory;
 import com.physmo.survivor.Message;
 import com.physmo.survivor.Resources;
+import com.physmo.survivor.TickPool;
 import com.physmo.survivor.TimedEvent;
 import com.physmo.survivor.components.weapons.Affliction;
 import com.physmo.survivor.components.weapons.AfflictionPacket;
@@ -41,16 +42,17 @@ public class Enemy extends Component {
     GameLogic gameLogic;
     ParticleFactory particleFactory;
 
-    TimedEvent hitFlashEvent = new TimedEvent();
+    TickPool timedEvents = new TickPool();
 
-    TimedEvent frozenEvent = new TimedEvent();
-    TimedEvent burnEvent = new TimedEvent();
-    TimedEvent poisonEvent = new TimedEvent();
-    TimedEvent acidEvent = new TimedEvent();
-    TimedEvent bleedEvent = new TimedEvent();
+    TimedEvent hitFlashEvent = new TimedEvent().addToPool(timedEvents);
 
-    TimedEvent pushBackEvent = new TimedEvent();
+    TimedEvent frozenEvent = new TimedEvent().addToPool(timedEvents);
+    TimedEvent burnEvent = new TimedEvent().addToPool(timedEvents);
+    TimedEvent poisonEvent = new TimedEvent().addToPool(timedEvents);
+    TimedEvent acidEvent = new TimedEvent().addToPool(timedEvents);
+    TimedEvent bleedEvent = new TimedEvent().addToPool(timedEvents);
 
+    TimedEvent pushBackEvent = new TimedEvent().addToPool(timedEvents);
 
 
     @Override
@@ -117,7 +119,7 @@ public class Enemy extends Component {
     @Override
     public void tick(double t) {
 
-        hitFlashEvent.tick(t);
+        timedEvents.tick(t);
         tickAfflictions(t);
 
 
@@ -127,8 +129,7 @@ public class Enemy extends Component {
             calculateMoveDir();
         }
 
-        boolean canMove = true;
-        if (frozenEvent.isActive()) canMove = false;
+        boolean canMove = !frozenEvent.isActive();
 
         double backOrForward  = 1;
 
@@ -176,35 +177,27 @@ public class Enemy extends Component {
     }
 
     public void tickAfflictions(double t) {
-        frozenEvent.tick(t);
-        pushBackEvent.tick(t);
-        burnEvent.tick(t);
-        poisonEvent.tick(t);
-        acidEvent.tick(t);
-        bleedEvent.tick(t);
-
-        boolean drawParticle = false;
-        if (Math.random() < 0.2) drawParticle = true;
+        double particleRoll = Math.random();
 
         if (frozenEvent.isActive()) {
             health -= t * 2;
-            if (drawParticle) particleFactory.createParticle(particleFactory.wandTrail, parent.getTransform());
+            if (particleRoll < 0.12) particleFactory.createParticle(particleFactory.wandTrail, parent.getTransform());
         }
         if (burnEvent.isActive()) {
             health -= t * 2;
-            if (drawParticle) particleFactory.createParticle(particleFactory.flame, parent.getTransform());
+            if (particleRoll < 0.45) particleFactory.createParticle(particleFactory.flame, parent.getTransform());
         }
         if (poisonEvent.isActive()) {
             health -= t * 2;
-            if (drawParticle) particleFactory.createParticle(particleFactory.wandTrail, parent.getTransform());
+            if (particleRoll < 0.10) particleFactory.createParticle(particleFactory.wandTrail, parent.getTransform());
         }
         if (acidEvent.isActive()) {
             health -= t * 2;
-            if (drawParticle) particleFactory.createParticle(particleFactory.acid, parent.getTransform());
+            if (particleRoll < 0.10) particleFactory.createParticle(particleFactory.acid, parent.getTransform());
         }
         if (bleedEvent.isActive()) {
             health -= t * 2;
-            if (drawParticle) particleFactory.createParticle(particleFactory.blood, parent.getTransform());
+            if (particleRoll < 0.30) particleFactory.createParticle(particleFactory.blood, parent.getTransform());
         }
 
     }
