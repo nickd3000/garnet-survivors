@@ -9,6 +9,7 @@ import com.physmo.garnet.toolkit.scene.SceneManager;
 import com.physmo.garnet.toolkit.simplecollision.ColliderComponent;
 import com.physmo.garnet.toolkit.simplecollision.CollisionSystem;
 import com.physmo.garnet.toolkit.simplecollision.RelativeObject;
+import com.physmo.garnet.toolkit.tick.TickSequence;
 import com.physmo.survivor.Constants;
 import com.physmo.survivor.Message;
 
@@ -16,6 +17,7 @@ import com.physmo.survivor.Message;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Player extends Component {
 
@@ -28,6 +30,9 @@ public class Player extends Component {
     ColliderComponent collider;
     PlayerCapabilities playerCapabilities;
     GameLogic gameLogic;
+    AtomicInteger moveDir = new AtomicInteger(0);
+    TickSequence moveSequence;
+
 
     public Array<RelativeObject> getNearestEnemies() {
         return nearestEnemies;
@@ -39,37 +44,6 @@ public class Player extends Component {
 
     public void setNearestCrystals(Array<RelativeObject> list) {
         this.nearestCrystals = list;
-    }
-
-    @Override
-    public void tick(double t) {
-        double speed = 40;
-
-        if (garnet.getInput().isActionKeyPressed(InputAction.RIGHT)) {
-            parent.getTransform().x += speed * t;
-        }
-        if (garnet.getInput().isActionKeyPressed(InputAction.LEFT)) {
-            parent.getTransform().x -= speed * t;
-        }
-        if (garnet.getInput().isActionKeyPressed(InputAction.UP)) {
-            parent.getTransform().y -= speed * t;
-        }
-        if (garnet.getInput().isActionKeyPressed(InputAction.DOWN)) {
-            parent.getTransform().y += speed * t;
-        }
-
-        if (nearestCrystals != null) {
-            for (RelativeObject nearestCrystal : nearestCrystals) {
-                nearestCrystal.getOtherObject().collisionGetGameObject().sendMessage(Message.HOMING_REQUEST, null);
-            }
-        }
-
-        garnet.getDebugDrawer().setUserString("d1 ", "");
-        garnet.getDebugDrawer().setUserString("d2 ", "");
-        garnet.getDebugDrawer().setUserString("d3 ", "");
-        garnet.getDebugDrawer().setUserString("Player ", (int) parent.getTransform().x + ", " + (int) parent.getTransform().x);
-
-        collider.setCollisionRegion(-8, -8, 14, 14);
     }
 
     @Override
@@ -93,8 +67,46 @@ public class Player extends Component {
 
 
 
-
+        moveSequence = new TickSequence().then(() -> moveDir.set(1))
+                .waitFor(3.5).then(() -> moveDir.set(4))
+                .waitFor(3).then(() -> moveDir.set(2))
+                .waitFor(3).then(() -> moveDir.set(3)).waitFor(3.5).loop();
+        moveSequence.start();
     }
+
+    @Override
+    public void tick(double t) {
+        double speed = 40;
+        moveSequence.tick(t);
+
+        if (garnet.getInput().isActionKeyPressed(InputAction.RIGHT) || moveDir.get() == 1) {
+            parent.getTransform().x += speed * t;
+        }
+        if (garnet.getInput().isActionKeyPressed(InputAction.LEFT) || moveDir.get() == 2) {
+            parent.getTransform().x -= speed * t;
+        }
+        if (garnet.getInput().isActionKeyPressed(InputAction.UP) || moveDir.get() == 3) {
+            parent.getTransform().y -= speed * t;
+        }
+        if (garnet.getInput().isActionKeyPressed(InputAction.DOWN) || moveDir.get() == 4) {
+            parent.getTransform().y += speed * t;
+        }
+
+        if (nearestCrystals != null) {
+            for (RelativeObject nearestCrystal : nearestCrystals) {
+                nearestCrystal.getOtherObject().collisionGetGameObject().sendMessage(Message.HOMING_REQUEST, null);
+            }
+        }
+
+        garnet.getDebugDrawer().setUserString("d1 ", "");
+        garnet.getDebugDrawer().setUserString("d2 ", "");
+        garnet.getDebugDrawer().setUserString("d3 ", "");
+        garnet.getDebugDrawer().setUserString("Player ", (int) parent.getTransform().x + ", " + (int) parent.getTransform().x);
+
+        collider.setCollisionRegion(-8, -8, 14, 14);
+    }
+
+
 
     @Override
     public void draw(Graphics g) {

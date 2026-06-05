@@ -4,10 +4,11 @@ import com.physmo.garnet.Garnet;
 import com.physmo.garnet.graphics.Graphics;
 import com.physmo.garnet.toolkit.scene.Scene;
 import com.physmo.garnet.toolkit.scene.SceneManager;
+import com.physmo.garnet.toolkit.tick.TimedEvent;
 
 public class LoadingScene extends Scene {
 
-    double clock = 0;
+    TimedEvent loadingDelay = new TimedEvent();
 
     public LoadingScene(String name) {
         super(name);
@@ -19,14 +20,13 @@ public class LoadingScene extends Scene {
 
         garnet.getDisplay().setWindowScale(3, false);
         //garnet.getDisplay().setFullScreen(true);
+
+        loadingDelay.startAndOnEnd(0.3, () -> SceneManager.setActiveScene("game"));
     }
 
     @Override
     public void tick(double delta) {
-        clock += delta;
-        if (clock>0.3) {
-            SceneManager.setActiveScene("game");
-        }
+        loadingDelay.tick(delta);
     }
 
     @Override

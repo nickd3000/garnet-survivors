@@ -61,12 +61,16 @@ public class GameLogic extends Component {
         gameTime += t;
         waveTimer -= t;
         if (waveTimer < 0) {
-            waveTimer = waveDuration;
-            currentWave++;
-            System.out.println("Wave " + currentWave);
+            increaseWave();
         }
 
 
+    }
+
+    public void increaseWave() {
+        waveTimer = waveDuration;
+        currentWave++;
+        System.out.println("Wave " + currentWave);
     }
 
     @Override
@@ -88,6 +92,8 @@ public class GameLogic extends Component {
             addToScore(event);
         } else if (name.equals(Message.XP_INCREASE) && data instanceof Integer event) {
             increaseXp(event);
+        } else if (name.equals(Message.NEXT_WAVE)) {
+            increaseWave();
         }
     }
 
@@ -144,7 +150,11 @@ public class GameLogic extends Component {
         } else if (currentWave == 3) {
             return 40;
         }
-        return 60;
+
+        if (currentWave<10) return 60;
+        if (currentWave<14) return 70;
+        if (currentWave<16) return 80;
+        return 90;
 
 
     }

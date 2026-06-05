@@ -5,6 +5,7 @@ import com.physmo.garnet.toolkit.Component;
 import com.physmo.garnet.toolkit.simplecollision.Collidable;
 import com.physmo.garnet.toolkit.simplecollision.ColliderComponent;
 import com.physmo.garnet.toolkit.simplecollision.CollisionSystem;
+import com.physmo.garnet.toolkit.tick.Timer;
 import com.physmo.survivor.Constants;
 import com.physmo.survivor.Message;
 import com.physmo.survivor.components.PlayerCapabilities;
@@ -24,6 +25,7 @@ public class Bullet extends Component {
     double dx = 0, dy = 0;
     boolean killMe = false;
     double age = 0;
+    Timer lifetime = new Timer(3);
     SpriteHelper spriteHelper;
     ColliderComponent colliderComponent;
     PlayerCapabilities playerCapabilities;
@@ -42,6 +44,7 @@ public class Bullet extends Component {
     public void init() {
         playerCapabilities = getComponentFromParentContext(PlayerCapabilities.class);
         particleFactory = getComponentFromParentContext(ParticleFactory.class);
+        lifetime.restart();
 
         spriteHelper = getComponentFromParentContext(SpriteHelper.class);
 
@@ -67,11 +70,12 @@ public class Bullet extends Component {
     @Override
     public void tick(double t) {
         age += t;
+        lifetime.tick(t);
         double speedAdjuster = playerCapabilities.getProjectileSpeedAdjuster();
         parent.getTransform().x += dx * t * speed * speedAdjuster;
         parent.getTransform().y += dy * t * speed * speedAdjuster;
 
-        if (age > 3) killMe = true;
+        if (lifetime.isComplete()) killMe = true;
 
         if (killMe) {
             CollisionSystem collisionSystem = getObjectByTypeFromParentContext(CollisionSystem.class);

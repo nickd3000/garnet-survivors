@@ -2,6 +2,7 @@ package com.physmo.survivor.components.items;
 
 import com.physmo.garnet.graphics.Graphics;
 import com.physmo.garnet.toolkit.Component;
+import com.physmo.garnet.toolkit.tick.TickGate;
 import com.physmo.survivor.components.weapons.ValueChange;
 import com.physmo.survivor.components.weapons.WeaponStatType;
 
@@ -10,7 +11,7 @@ import java.util.Map;
 
 public class CombinedItemStats extends Component {
 
-    double refreshTimer = 1;
+    TickGate refreshGate = new TickGate(1);
 
     Map<WeaponStatType, ValueChange> weaponStatChange = new HashMap<>();
     boolean initialized = false;
@@ -57,9 +58,7 @@ public class CombinedItemStats extends Component {
     @Override
     public void tick(double t) {
 
-        refreshTimer -= t;
-        if (refreshTimer < 0) {
-            refreshTimer += 1;
+        if (refreshGate.allow(t)) {
             refresh();
         }
 

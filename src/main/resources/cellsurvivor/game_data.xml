@@ -23,7 +23,7 @@
         <enemy id="6" name="Crab" speed="1.3" health="60">
             <sprite>4,4</sprite>
         </enemy>
-        <enemy id="7" name="Mummy" speed="1.0" health="20">
+        <enemy id="7" name="Mummy" speed="1.0" health="40">
             <sprite>10,7</sprite>
         </enemy>
         <enemy id="8" name="Tree" speed="0.7" health="50">
@@ -37,6 +37,31 @@
         </enemy>
         <enemy id="11" name="Beetle" speed="1.5" health="45">
             <sprite>2,4</sprite>
+        </enemy>
+
+        <enemy id="12" name="Devil" speed="1.5" health="60">
+            <sprite>9,7</sprite>
+        </enemy>
+        <enemy id="13" name="Skull" speed="1.5" health="60">
+            <sprite>8,8</sprite>
+        </enemy>
+        <enemy id="14" name="Jawa" speed="1.5" health="65">
+            <sprite>6,8</sprite>
+        </enemy>
+        <enemy id="15" name="Ghost" speed="1.5" health="70">
+            <sprite>5,7</sprite>
+        </enemy>
+        <enemy id="16" name="GreenGuy" speed="1.5" health="75">
+            <sprite>3,6</sprite>
+        </enemy>
+        <enemy id="17" name="Knight1" speed="1.5" health="80">
+            <sprite>3,0</sprite>
+        </enemy>
+        <enemy id="18" name="Knight2" speed="1.5" health="90">
+            <sprite>9,0</sprite>
+        </enemy>
+        <enemy id="19" name="Chicken" speed="1.5" health="90">
+            <sprite>0,3</sprite>
         </enemy>
     </enemies>
     <weapons>

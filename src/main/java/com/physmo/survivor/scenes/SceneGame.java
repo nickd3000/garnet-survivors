@@ -17,6 +17,7 @@ import com.physmo.garnet.toolkit.simplecollision.CollisionSystem;
 import com.physmo.garnet.toolkit.simplecollision.RelativeObject;
 import com.physmo.survivor.Constants;
 import com.physmo.survivor.EntityFactory;
+import com.physmo.survivor.Message;
 import com.physmo.survivor.Resources;
 import com.physmo.survivor.components.EnemySpawner;
 import com.physmo.survivor.components.GameLogic;
@@ -184,9 +185,12 @@ public class SceneGame extends Scene {
         if (garnet.getInput().getKeyboard().isKeyFirstPress(InputKeys.KEY_L)) {
             GameLogic gameLogic = context.getComponent(GameLogic.class);
             gameLogic.showLevelUpScreen();
-
         }
 
+        // Skip stage
+        if (garnet.getInput().getKeyboard().isKeyFirstPress(InputKeys.KEY_W)) {
+            context.broadcastMessage(Message.NEXT_WAVE);
+        }
 
     }
 

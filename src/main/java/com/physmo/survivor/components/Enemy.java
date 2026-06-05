@@ -8,6 +8,7 @@ import com.physmo.garnet.toolkit.scene.SceneManager;
 import com.physmo.garnet.toolkit.simplecollision.ColliderComponent;
 import com.physmo.garnet.toolkit.simplecollision.CollisionSystem;
 import com.physmo.garnet.toolkit.simplecollision.RelativeObject;
+import com.physmo.garnet.toolkit.tick.TickGate;
 import com.physmo.garnet.toolkit.tick.TickPool;
 import com.physmo.garnet.toolkit.tick.TimedEvent;
 import com.physmo.survivor.Constants;
@@ -27,7 +28,7 @@ public class Enemy extends Component {
     Vector3 moveDir = new Vector3(1, 0, 0);
     GameObject player;
 
-    double moveDirTimeout = 0;
+    TickGate moveDirGate = new TickGate(0.3);
 
     double health = 100;
     List<RelativeObject> closeObjects = new ArrayList<>();
@@ -74,6 +75,7 @@ public class Enemy extends Component {
         gameLogic = getComponentFromParentContext(GameLogic.class);
 
         rollAngle = Math.random() * 360;
+        calculateMoveDir();
 
     }
 
@@ -123,9 +125,7 @@ public class Enemy extends Component {
         tickAfflictions(t);
 
 
-        moveDirTimeout -= t;
-        if (moveDirTimeout < 0) {
-            moveDirTimeout = 0.3;
+        if (moveDirGate.allow(t)) {
             calculateMoveDir();
         }
 

@@ -6,6 +6,7 @@ import com.physmo.garnet.toolkit.Component;
 import com.physmo.garnet.toolkit.simplecollision.Collidable;
 import com.physmo.garnet.toolkit.simplecollision.ColliderComponent;
 import com.physmo.garnet.toolkit.simplecollision.CollisionSystem;
+import com.physmo.garnet.toolkit.tick.Timer;
 import com.physmo.survivor.Constants;
 import com.physmo.survivor.Message;
 import com.physmo.survivor.components.ParticleFactory;
@@ -23,7 +24,7 @@ public class Puddle extends Component {
     PuddleType puddleType;
     double dx = 0, dy = 0;
     boolean killMe = false;
-    double age = 0;
+    Timer lifetime;
     SpriteHelper spriteHelper;
     ColliderComponent colliderComponent;
     PlayerCapabilities playerCapabilities;
@@ -32,13 +33,12 @@ public class Puddle extends Component {
 
     double damage = 1;
     double radius = 10;
-    double lifeTime;
 
     public Puddle(PuddleType puddleType, double radius, double damage, double lifeTime) {
         this.puddleType = puddleType;
         this.radius = radius;
         this.damage = damage;
-        this.lifeTime = lifeTime;
+        lifetime = new Timer(lifeTime);
 
     }
 
@@ -50,6 +50,7 @@ public class Puddle extends Component {
         spriteHelper = getComponentFromParentContext(SpriteHelper.class);
 
         colliderComponent = parent.getComponent(ColliderComponent.class);
+        lifetime.restart();
 
         colliderComponent.setCallbackEnter(target -> {
             if (target.hasTag(Constants.TAG_ENEMY)) {
@@ -63,9 +64,9 @@ public class Puddle extends Component {
 
     @Override
     public void tick(double t) {
-        age += t;
+        lifetime.tick(t);
 
-        if (age > lifeTime) killMe = true;
+        if (lifetime.isComplete()) killMe = true;
 
         if (killMe) {
             CollisionSystem collisionSystem = getObjectByTypeFromParentContext(CollisionSystem.class);

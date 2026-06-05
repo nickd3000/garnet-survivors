@@ -10,6 +10,8 @@ import com.physmo.garnet.toolkit.scene.SceneManager;
 import com.physmo.garnet.toolkit.simplecollision.Collidable;
 import com.physmo.garnet.toolkit.simplecollision.ColliderComponent;
 import com.physmo.garnet.toolkit.simplecollision.CollisionSystem;
+import com.physmo.garnet.toolkit.tick.TickGate;
+import com.physmo.garnet.toolkit.tick.Timer;
 import com.physmo.survivor.components.ParticleFactory;
 import com.physmo.survivor.components.PlayerCapabilities;
 import com.physmo.survivor.components.ProjectileType;
@@ -27,23 +29,23 @@ public class OrbitingBullet extends Component {
     ProjectileType projectileType = ProjectileType.ARROW;
 
     boolean killMe = false;
-    double age = 0;
     SpriteHelper spriteHelper;
     ColliderComponent colliderComponent;
     PlayerCapabilities playerCapabilities;
 
     GameObject orbitObject;
     ParticleFactory particleFactory;
+    Timer lifetime;
 
     double radius;
     int bulletNumber;
     int bulletGroupSize;
-    double lifeTime;
     double rotationAngle = 0;
     double spinAngle = 0;
     ParticleTemplate glaveParticleTemplate;
     ParticleManager particleManager;
-    double particleTimer = 0;
+    TickGate particleGate = new TickGate(0.02);
+    boolean firstParticleTick = true;
     double damage;
 
     public OrbitingBullet(GameObject orbitObject, double radius, double speed, int bulletNumber, int bulletGroupSize, ProjectileType type, double lifeTime, double damage) {
@@ -53,8 +55,8 @@ public class OrbitingBullet extends Component {
         this.bulletNumber = bulletNumber;
         this.bulletGroupSize = bulletGroupSize;
         this.projectileType = type;
-        this.lifeTime = lifeTime;
         this.damage = damage;
+        lifetime = new Timer(lifeTime);
 
         rotationAngle = ((Math.PI * 2) / bulletGroupSize) * bulletNumber;
 
@@ -69,6 +71,7 @@ public class OrbitingBullet extends Component {
         spriteHelper = getComponentFromParentContext(SpriteHelper.class);
         particleFactory = getComponentFromParentContext(ParticleFactory.class);
         colliderComponent = parent.getComponent(ColliderComponent.class);
+        lifetime.restart();
 
         colliderComponent.setCallbackEnter(target -> {
             if (target.hasTag(Constants.TAG_ENEMY)) {
@@ -100,10 +103,9 @@ public class OrbitingBullet extends Component {
 
     @Override
     public void tick(double t) {
-        age += t;
+        lifetime.tick(t);
         rotationAngle += t * speed;
         spinAngle += t * 300;
-        particleTimer -= t;
 
         double dx = Math.sin(rotationAngle) * radius;
         double dy = Math.cos(rotationAngle) * radius;
@@ -115,7 +117,7 @@ public class OrbitingBullet extends Component {
 //            System.out.println(" " + orbitObject.getPosition().x + " " + orbitObject.getPosition().y);
 //        }
 
-        if (age > lifeTime) killMe = true;
+        if (lifetime.isComplete()) killMe = true;
 
         if (killMe) {
             //System.out.println("kill orbiter");
@@ -125,8 +127,9 @@ public class OrbitingBullet extends Component {
             parent.destroy();
         }
 
-        if (particleTimer < 0) {
-            particleTimer += 0.02;
+        boolean emitParticle = particleGate.allow(t);
+        if (firstParticleTick || emitParticle) {
+            firstParticleTick = false;
             //glaveParticleTemplate.initParticle(particleManager.getFreeParticle(), parent.getTransform());
             particleFactory.createParticle(particleFactory.glaveTrail, parent.getTransform());
         }

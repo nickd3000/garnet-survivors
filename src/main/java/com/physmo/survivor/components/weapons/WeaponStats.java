@@ -1,6 +1,7 @@
 package com.physmo.survivor.components.weapons;
 
 
+import com.physmo.garnet.toolkit.tick.TickGate;
 import com.physmo.survivor.components.items.CombinedItemStats;
 import com.physmo.survivor.gamedata.GDWeapon;
 import com.physmo.survivor.gamedata.GDWeaponLevel;
@@ -11,7 +12,9 @@ import java.util.Map;
 public class WeaponStats {
 
     Map<WeaponStatType, WeaponStat> stats;
-    double refreshTimer = 1;
+    TickGate firstRefreshGate = new TickGate(1);
+    TickGate refreshGate = new TickGate(3);
+    boolean firstRefreshPending = true;
 
     public WeaponStats() {
         stats = new HashMap<>();
@@ -29,9 +32,15 @@ public class WeaponStats {
     }
 
     public void refreshStatsOnTimeout(double t, GDWeapon gdWeapon, int level, CombinedItemStats combinedItemStats) {
-        refreshTimer -= t;
-        if (refreshTimer < 0) {
-            refreshTimer += 3;
+        if (firstRefreshPending) {
+            if (firstRefreshGate.allow(t)) {
+                firstRefreshPending = false;
+                refreshStats(gdWeapon, level, combinedItemStats);
+            }
+            return;
+        }
+
+        if (refreshGate.allow(t)) {
             refreshStats(gdWeapon, level, combinedItemStats);
         }
     }
