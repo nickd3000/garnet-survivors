@@ -4,10 +4,6 @@ import com.physmo.garnet.Garnet;
 import com.physmo.garnet.GarnetApp;
 import com.physmo.garnet.graphics.Graphics;
 import com.physmo.garnet.graphics.ShaderProgram;
-
-import static org.lwjgl.opengl.GL20.glGetUniformLocation;
-import static org.lwjgl.opengl.GL20.glUniform2f;
-import static org.lwjgl.opengl.GL20.glUseProgram;
 import com.physmo.garnet.toolkit.scene.SceneManager;
 import com.physmo.survivor.scenes.LoadingScene;
 import com.physmo.survivor.scenes.SceneGame;
@@ -19,26 +15,22 @@ public class CellSurvivor extends GarnetApp {
     private ShaderProgram crtShader;
     private Garnet garnet;
 
-    public CellSurvivor(Garnet garnet, String name) {
-        super(garnet, name);
+    public CellSurvivor() {
+        super("");
     }
 
     public static void main(String[] args) {
-        Garnet garnet = new Garnet(384, 216);
-        garnet.setInternalBufferMode(true);
-        garnet.setApp(new CellSurvivor(garnet, ""));
-        garnet.init();
-        garnet.run();
+        Garnet.launch(384, 216, CellSurvivor::new, garnet -> garnet.setInternalBufferMode(true));
     }
 
     @Override
-    public void init(Garnet garnet) {
-        this.garnet = garnet;
+    public void init() {
+        this.garnet = getGarnet();
         Resources resources = new Resources();
-        resources.init(garnet.getGraphics());
+        resources.init(this.garnet.getGraphics());
         SceneManager.getSharedContext().add(resources);
 
-        SceneManager.getSharedContext().add(garnet);
+        SceneManager.getSharedContext().add(this.garnet);
         SceneManager.addScene(new SceneGame("game"));
         SceneManager.addScene(new ScenePause("pause"));
         SceneManager.addScene(new SceneLevelUp("levelUp"));
@@ -46,7 +38,7 @@ public class CellSurvivor extends GarnetApp {
         SceneManager.setActiveScene("loadingScene");
 
         crtShader = ShaderProgram.fromFiles("shaders/passthrough.vert", "shaders/crt.frag");
-        garnet.setInternalBufferShader(crtShader);
+        this.garnet.setInternalBufferShader(crtShader);
     }
 
     @Override
@@ -59,9 +51,8 @@ public class CellSurvivor extends GarnetApp {
         SceneManager.draw(g);
 
         crtShader.bind();
-        int loc = glGetUniformLocation(crtShader.getProgramId(), "resolution");
         int[] canvas = garnet.getDisplay().getCanvasSize();
-        glUniform2f(loc, canvas[0], canvas[1]);
-        glUseProgram(0);
+        crtShader.setUniform2f("resolution", canvas[0], canvas[1]);
+        crtShader.unbind();
     }
 }

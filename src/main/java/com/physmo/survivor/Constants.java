@@ -12,6 +12,7 @@ public class Constants {
 
 
     public static final int DRAW_ORDER_PAUSE_FOREGROUND = 120;
+    public static final int DRAW_ORDER_PERFORMANCE_OVERLAY = 130;
     public static final int DRAW_ORDER_PAUSE_BACKGROUND = 110;
     public static final int DRAW_ORDER_HUD = 100;
     public static final int DRAW_ORDER_DEBUG_OVERLAY = 30;

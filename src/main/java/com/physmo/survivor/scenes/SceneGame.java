@@ -6,8 +6,10 @@ import com.physmo.garnet.drawablebatch.BlendMode;
 import com.physmo.garnet.graphics.Graphics;
 import com.physmo.garnet.graphics.Viewport;
 import com.physmo.garnet.input.InputKeys;
+import com.physmo.garnet.renderer.BatchRenderStats;
 import com.physmo.garnet.structure.Array;
 import com.physmo.garnet.structure.Rect;
+import com.physmo.garnet.text.RegularFont;
 import com.physmo.garnet.toolkit.GameObject;
 import com.physmo.garnet.toolkit.particle.ParticleManager;
 import com.physmo.garnet.toolkit.scene.Scene;
@@ -46,6 +48,7 @@ public class SceneGame extends Scene {
     CombinedItemStats combinedItemStats;
 
     boolean showCollision = false;
+    boolean showRenderStatsOverlay = false;
 
     public SceneGame(String name) {
         super(name);
@@ -192,6 +195,10 @@ public class SceneGame extends Scene {
             context.broadcastMessage(Message.NEXT_WAVE);
         }
 
+        if (garnet.getInput().getKeyboard().isKeyFirstPress(InputKeys.KEY_F3)) {
+            showRenderStatsOverlay = !showRenderStatsOverlay;
+        }
+
     }
 
     public void initParticleManager() {
@@ -212,7 +219,32 @@ public class SceneGame extends Scene {
 
     @Override
     public void draw(Graphics g) {
+        if (!showRenderStatsOverlay) return;
 
+        drawRenderStatsOverlay(g);
+    }
+
+    private void drawRenderStatsOverlay(Graphics g) {
+        Resources resources = SceneManager.getSharedContext().getObjectByType(Resources.class);
+        RegularFont font = resources.getRegularFont();
+        BatchRenderStats stats = g.getRenderStats();
+
+        int prevViewport = g.getViewportManager().getActiveViewportId();
+        g.setActiveViewport(Constants.overlayViewportId);
+        g.setDrawOrder(Constants.DRAW_ORDER_PERFORMANCE_OVERLAY);
+        g.setColor(ColorUtils.rgb(0, 0, 0, 190));
+        g.filledRect(230, 5, 148, 64);
+
+        font.setScale(1);
+        g.setColor(ColorUtils.WINTER_WHITE);
+        font.drawText(g, "F3 Render Stats", 236, 10);
+        font.drawText(g, "queued " + stats.getQueuedElements(), 236, 20);
+        font.drawText(g, "runs   " + stats.getRenderRuns(), 236, 30);
+        font.drawText(g, "draws  " + stats.getDrawCalls(), 236, 40);
+        font.drawText(g, "binds  " + stats.getTextureBinds(), 236, 50);
+        font.drawText(g, "uploads " + stats.getBufferUploads(), 236, 60);
+
+        g.setActiveViewport(prevViewport);
     }
 
     @Override
